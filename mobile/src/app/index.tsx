@@ -4,16 +4,30 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useCart } from '@/context/cart-context';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { CATEGORIES, featuredProducts } from '@/data/products';
+import { featuredProducts } from '@/data/products';
 
-const categories = [...CATEGORIES];
+const categories = [
+  { label: 'All', value: 'All' },
+  { label: 'Grocery', value: 'Grocery' },
+  { label: 'Clothes', value: 'Clothing' },
+  { label: 'Electronics', value: 'Electronics' },
+  { label: 'Others', value: 'Others' },
+];
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { addToCart } = useCart();
+  const params = useLocalSearchParams<{ category?: string }>();
+  const selectedCategory = typeof params.category === 'string' && params.category ? params.category : 'All';
+  const visibleProducts =
+    selectedCategory === 'All'
+      ? featuredProducts
+      : featuredProducts.filter((product) => product.category === selectedCategory);
 
   return (
     <ThemedView style={styles.container}>
@@ -58,19 +72,27 @@ export default function HomeScreen() {
 
           <View style={styles.sectionHeader}>
             <ThemedText type="smallBold">Categories</ThemedText>
-            <ThemedText type="small" style={styles.linkText}>
-              See all
-            </ThemedText>
+            <Pressable onPress={() => router.push('/explore')}>
+              <ThemedText type="small" style={styles.linkText}>
+                See all
+              </ThemedText>
+            </Pressable>
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryRow}>
             {categories.map((item) => (
               <Pressable
-                key={item}
-                style={[styles.categoryChip, item === 'All' && styles.categoryChipActive]}
+                key={item.value}
+                style={[styles.categoryChip, selectedCategory === item.value && styles.categoryChipActive]}
+                onPress={() =>
+                  router.push({
+                    pathname: '/',
+                    params: { category: item.value === 'All' ? '' : item.value },
+                  })
+                }
               >
-                <ThemedText style={[styles.categoryChipText, item === 'All' && styles.categoryChipTextActive]}>
-                  {item}
+                <ThemedText style={[styles.categoryChipText, selectedCategory === item.value && styles.categoryChipTextActive]}>
+                  {item.label}
                 </ThemedText>
               </Pressable>
             ))}
@@ -84,27 +106,26 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.productGrid}>
-            {featuredProducts.map((product) => (
-              <Pressable
-                key={product.id}
-                style={styles.productCard}
-                onPress={() =>
-                  router.push({
-                    pathname: '/product/[id]',
-                    params: { id: product.id },
-                  })
-                }
-              >
-                <Image source={{ uri: product.image }} style={styles.productImage} />
-                <View style={styles.productInfo}>
-                  <ThemedText type="small" style={styles.productCategory}>
-                    {product.category.toUpperCase()}
-                  </ThemedText>
-                  <ThemedText type="smallBold" style={styles.productName}>
-                    {product.name}
-                  </ThemedText>
+            {visibleProducts.map((product) => (
+              <View key={product.id} style={styles.productCard}>
+                <Pressable
+                  style={styles.productPressable}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/product/[id]',
+                      params: { id: product.id },
+                    })
+                  }
+                >
+                  <Image source={{ uri: product.image }} style={styles.productImage} />
+                  <View style={styles.productInfo}>
+                    <ThemedText type="small" style={styles.productCategory}>
+                      {product.category.toUpperCase()}
+                    </ThemedText>
+                    <ThemedText type="smallBold" style={styles.productName}>
+                      {product.name}
+                    </ThemedText>
 
-                  <View style={styles.metaRow}>
                     <View style={styles.ratingRow}>
                       <Ionicons name="star" size={13} color="#f59e0b" />
                       <ThemedText type="small" style={styles.ratingText}>
@@ -115,8 +136,11 @@ export default function HomeScreen() {
                       ${product.price.toFixed(2)}
                     </ThemedText>
                   </View>
-                </View>
-              </Pressable>
+                </Pressable>
+                <Pressable style={styles.addButton} onPress={() => addToCart(product)}>
+                  <Ionicons name="add" size={18} color="#ffffff" />
+                </Pressable>
+              </View>
             ))}
           </View>
         </ScrollView>
@@ -264,6 +288,9 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginBottom: Spacing.two,
   },
+  productPressable: {
+    gap: 4,
+  },
   productImage: {
     width: '100%',
     height: 120,
@@ -272,6 +299,24 @@ const styles = StyleSheet.create({
   productInfo: {
     padding: Spacing.two,
     gap: 4,
+    paddingBottom: Spacing.four,
+  },
+  addButton: {
+    position: 'absolute',
+    right: Spacing.two,
+    bottom: Spacing.two,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#059669',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
   },
   productCategory: {
     color: '#059669',
@@ -282,16 +327,11 @@ const styles = StyleSheet.create({
     color: '#111827',
     fontSize: 14,
   },
-  metaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 4,
-  },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    marginTop: 4,
   },
   ratingText: {
     color: '#6b7280',
@@ -299,6 +339,7 @@ const styles = StyleSheet.create({
   },
   priceText: {
     color: '#111827',
+    marginTop: 2,
   },
   bottomBar: {
     flexDirection: 'row',

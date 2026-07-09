@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useCart } from '@/context/cart-context';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { featuredProducts } from '@/data/products';
 
@@ -25,12 +26,14 @@ export default function ProductDetailsScreen() {
     );
   }
 
+  const { addToCart } = useCart();
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="chevron-left" size={24} color="#059669" />
+            <Ionicons name="chevron-back" size={24} color="#059669" />
           </Pressable>
           <ThemedText type="subtitle" style={styles.pageTitle}>
             {product.name}
@@ -64,7 +67,7 @@ export default function ProductDetailsScreen() {
             <ThemedText type="smallBold" style={styles.priceText}>
               ${product.price.toFixed(2)}
             </ThemedText>
-            <Pressable style={styles.cartButton}>
+            <Pressable style={styles.cartButton} onPress={() => addToCart(product)}>
               <Ionicons name="cart" size={18} color="#ffffff" />
               <ThemedText style={styles.cartButtonText}>Add to cart</ThemedText>
             </Pressable>

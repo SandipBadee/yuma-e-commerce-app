@@ -1,26 +1,25 @@
 "use client";
 
-import { DarkTheme, DefaultTheme, Slot, ThemeProvider } from 'expo-router';
+import { DefaultTheme, Slot, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { BottomMenu } from '../components/bottom-menu';
+import { CartProvider } from '@/context/cart-context';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <View style={styles.app}>
-        <View style={styles.content}>
-          <Slot />
+    <ThemeProvider value={DefaultTheme}>
+      <CartProvider>
+        <View style={styles.app}>
+          <View style={styles.content}>
+            <Slot />
+          </View>
+          <BottomMenu />
         </View>
-        <BottomMenu />
-      </View>
+      </CartProvider>
     </ThemeProvider>
   );
 }
