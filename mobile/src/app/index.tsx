@@ -1,5 +1,3 @@
-"use client";
-
 import { Ionicons } from '@expo/vector-icons';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -113,7 +111,16 @@ export default function HomeScreen() {
                   onPress={() =>
                     router.push({
                       pathname: '/product/[id]',
-                      params: { id: product.id },
+                      params: {
+                        id: product.id,
+                        name: product.name,
+                        category: product.category,
+                        price: product.price.toString(),
+                        description: product.description,
+                        image: product.image,
+                        rating: product.rating.toString(),
+                        reviews: product.reviews.toString(),
+                      },
                     })
                   }
                 >

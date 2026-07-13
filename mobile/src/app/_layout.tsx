@@ -1,13 +1,8 @@
-"use client";
-
 import { DefaultTheme, Slot, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { StyleSheet, View } from 'react-native';
 
 import { BottomMenu } from '../components/bottom-menu';
 import { CartProvider } from '@/context/cart-context';
-
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (

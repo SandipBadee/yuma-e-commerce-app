@@ -1,5 +1,3 @@
-"use client";
-
 import { Ionicons } from '@expo/vector-icons';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 

@@ -4,12 +4,14 @@ import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useCart } from '@/context/cart-context';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { featuredProducts } from '@/data/products';
 
 export default function CategoryProductsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ category?: string }>();
+  const { addToCart } = useCart();
   const categoryName = params.category ?? 'Category';
   const products = featuredProducts.filter((product) => product.category === categoryName);
 
@@ -32,16 +34,35 @@ export default function CategoryProductsScreen() {
           <View style={styles.productGrid}>
             {products.map((product) => (
               <View key={product.id} style={styles.productCard}>
-                <Image source={{ uri: product.image }} style={styles.productImage} />
-                <View style={styles.productInfo}>
-                  <ThemedText type="smallBold" style={styles.productName}>
-                    {product.name}
-                  </ThemedText>
-                  <ThemedText type="small" style={styles.productMeta}>
-                    ${product.price.toFixed(2)}
-                  </ThemedText>
-                </View>
-                <Pressable style={styles.addButton}>
+                <Pressable
+                  style={styles.productPressable}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/product/[id]',
+                      params: {
+                        id: product.id,
+                        name: product.name,
+                        category: product.category,
+                        price: product.price.toString(),
+                        description: product.description,
+                        image: product.image,
+                        rating: product.rating.toString(),
+                        reviews: product.reviews.toString(),
+                      },
+                    })
+                  }
+                >
+                  <Image source={{ uri: product.image }} style={styles.productImage} />
+                  <View style={styles.productInfo}>
+                    <ThemedText type="smallBold" style={styles.productName}>
+                      {product.name}
+                    </ThemedText>
+                    <ThemedText type="small" style={styles.productMeta}>
+                      ${product.price.toFixed(2)}
+                    </ThemedText>
+                  </View>
+                </Pressable>
+                <Pressable style={styles.addButton} onPress={() => addToCart(product)}>
                   <Ionicons name="add" size={18} color="#ffffff" />
                 </Pressable>
               </View>
@@ -108,6 +129,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 2,
+  },
+  productPressable: {
+    gap: Spacing.one,
   },
   productImage: {
     width: '100%',

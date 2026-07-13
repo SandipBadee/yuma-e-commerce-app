@@ -1,5 +1,3 @@
-"use client";
-
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -12,8 +10,29 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
 export default function CartScreen() {
   const router = useRouter();
-  const { cartItems, increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
+  const { cartItems, increaseQuantity, decreaseQuantity, removeFromCart, placeOrder } = useCart();
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handlePlaceOrder = () => {
+    if (cartItems.length === 0) {
+      return;
+    }
+
+    const order = placeOrder();
+    if (!order) {
+      return;
+    }
+
+    router.replace({
+      pathname: './order-success',
+      params: {
+        total: order.total.toFixed(2),
+        items: order.itemCount.toString(),
+        orderId: order.id,
+        status: order.status,
+      },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -50,10 +69,27 @@ export default function CartScreen() {
             ))}
 
             <View style={styles.summaryCard}>
-              <ThemedText type="smallBold">Total</ThemedText>
-              <ThemedText type="title" style={styles.totalText}>
-                ${total.toFixed(2)}
-              </ThemedText>
+              <View style={styles.summaryRow}>
+                <ThemedText type="smallBold">Items</ThemedText>
+                <ThemedText type="small">{cartItems.length}</ThemedText>
+              </View>
+              <View style={styles.summaryRow}>
+                <ThemedText type="smallBold">Subtotal</ThemedText>
+                <ThemedText type="small">${total.toFixed(2)}</ThemedText>
+              </View>
+              <View style={styles.summaryRow}>
+                <ThemedText type="smallBold">Delivery</ThemedText>
+                <ThemedText type="small">Free</ThemedText>
+              </View>
+              <View style={styles.summaryRowLarge}>
+                <ThemedText type="smallBold">Total</ThemedText>
+                <ThemedText type="title" style={styles.totalText}>
+                  ${total.toFixed(2)}
+                </ThemedText>
+              </View>
+              <Pressable style={styles.placeOrderButton} onPress={handlePlaceOrder}>
+                <ThemedText style={styles.placeOrderText}>Place Order</ThemedText>
+              </Pressable>
             </View>
           </View>
         )}
@@ -144,6 +180,29 @@ const styles = StyleSheet.create({
   },
   totalText: {
     marginTop: Spacing.one,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.one,
+  },
+  summaryRowLarge: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.two,
+  },
+  placeOrderButton: {
+    marginTop: Spacing.three,
+    backgroundColor: '#059669',
+    paddingVertical: Spacing.three,
+    borderRadius: 18,
+    alignItems: 'center',
+  },
+  placeOrderText: {
+    color: '#ffffff',
+    fontWeight: '700',
   },
   bottomSpacer: {
     height: BottomTabInset,

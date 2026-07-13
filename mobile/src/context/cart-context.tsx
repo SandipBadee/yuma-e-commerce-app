@@ -1,5 +1,3 @@
-"use client";
-
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export type CartItem = {
@@ -12,18 +10,33 @@ export type CartItem = {
 
 export type AddToCartItem = Omit<CartItem, 'quantity'>;
 
+export type OrderStatus = 'Pending' | 'On the way' | 'Delivered';
+
+export type Order = {
+  id: string;
+  items: CartItem[];
+  total: number;
+  itemCount: number;
+  status: OrderStatus;
+  createdAt: string;
+};
+
 type CartContextValue = {
   cartItems: CartItem[];
+  orders: Order[];
   addToCart: (item: AddToCartItem) => void;
   removeFromCart: (id: string) => void;
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
+  clearCart: () => void;
+  placeOrder: () => Order | null;
 };
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const addToCart = (newItem: AddToCartItem) => {
     setCartItems((current) => {
@@ -59,9 +72,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  const placeOrder = () => {
+    if (cartItems.length === 0) {
+      return null;
+    }
+
+    const statuses: OrderStatus[] = ['Pending', 'On the way', 'Delivered'];
+    const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const order: Order = {
+      id: `ORD-${Date.now().toString().slice(-6)}`,
+      items: cartItems.map((item) => ({ ...item })),
+      total,
+      itemCount,
+      status: statuses[orders.length % statuses.length],
+      createdAt: new Date().toISOString(),
+    };
+
+    setOrders((current) => [order, ...current]);
+    setCartItems([]);
+
+    return order;
+  };
+
   const value = useMemo(
-    () => ({ cartItems, addToCart, removeFromCart, increaseQuantity, decreaseQuantity }),
-    [cartItems]
+    () => ({
+      cartItems,
+      orders,
+      addToCart,
+      removeFromCart,
+      increaseQuantity,
+      decreaseQuantity,
+      clearCart,
+      placeOrder,
+    }),
+    [cartItems, orders]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
