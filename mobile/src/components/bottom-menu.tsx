@@ -2,10 +2,10 @@ import { Link, usePathname } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useCart } from '@/context/cart-context';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useCartStore } from '../../store/useCartStore';
 
 type BottomMenuRoute = '/' | '/explore' | '/cart' | '/orders' | '/profile';
 
@@ -26,7 +26,7 @@ const menuItems: BottomMenuItem[] = [
 export function BottomMenu() {
   const theme = useTheme();
   const pathname = usePathname();
-  const { cartItems } = useCart();
+  const { cartItems } = useCartStore() as { cartItems: Array<{ id: string }> };
   const cartItemCount = cartItems.length;
 
   return (

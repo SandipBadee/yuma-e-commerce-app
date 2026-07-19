@@ -1,21 +1,57 @@
 ﻿import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { featuredProducts } from '@/data/products';
+import { fetchCategories, type MobileCategory } from '@/lib/category-api';
 
-const categories = [
-  { label: 'grocery', value: 'Grocery', icon: 'basket-outline' as const },
-  { label: 'clothes', value: 'Clothing', icon: 'shirt-outline' as const },
-  { label: 'electronics', value: 'Electronics', icon: 'desktop-outline' as const },
-  { label: 'others', value: 'Others', icon: 'sparkles-outline' as const },
-];
+const categoryIcons = [
+  'basket-outline',
+  'shirt-outline',
+  'desktop-outline',
+  'sparkles-outline',
+] as const;
 
 export default function CategoriesScreen() {
   const router = useRouter();
+  const [categories, setCategories] = useState<MobileCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const allCategories = await fetchCategories();
+        if (!isMounted) return;
+        setCategories(allCategories);
+      } catch (err) {
+        if (!isMounted) return;
+        setError(String((err as Error)?.message || 'Failed to load categories.'));
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const categoryCards = useMemo(
+    () => categories.map((category) => ({ label: category.name, value: category.slug, count: category.productCount })),
+    [categories]
+  );
 
   return (
     <ThemedView style={styles.container}>
@@ -29,9 +65,18 @@ export default function CategoriesScreen() {
           </View>
         </View>
 
-        <View style={styles.categoryGrid}>
-          {categories.map((category) => {
-            const count = featuredProducts.filter((product) => product.category === category.value).length;
+        {loading ? (
+          <ThemedText type="small" style={styles.metaText}>
+            Loading categories...
+          </ThemedText>
+        ) : error ? (
+          <ThemedText type="small" style={styles.errorText}>
+            {error}
+          </ThemedText>
+        ) : (
+          <View style={styles.categoryGrid}>
+            {categoryCards.map((category, index) => {
+            const icon = categoryIcons[index % categoryIcons.length];
             return (
               <Pressable
                 key={category.value}
@@ -44,16 +89,17 @@ export default function CategoriesScreen() {
                 }
               >
                 <View style={styles.iconWrap}>
-                  <Ionicons name={category.icon} size={24} color="#059669" />
+                  <Ionicons name={icon} size={24} color="#059669" />
                 </View>
                 <Text style={styles.categoryTitle}>{category.label}</Text>
                 <ThemedText type="small" style={styles.categoryMeta}>
-                  {count} products
+                  {category.count} products
                 </ThemedText>
               </Pressable>
             );
           })}
-        </View>
+          </View>
+        )}
       </ScrollView>
     </ThemedView>
   );
@@ -119,5 +165,11 @@ const styles = StyleSheet.create({
   },
   categoryMeta: {
     color: '#6b7280',
+  },
+  metaText: {
+    color: '#6b7280',
+  },
+  errorText: {
+    color: '#b91c1c',
   },
 });

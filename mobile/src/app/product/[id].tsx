@@ -1,51 +1,76 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useCart } from '@/context/cart-context';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { fetchProductBySlug, type MobileProduct } from '@/lib/product-api';
+import { useCartStore } from '../../../store/useCartStore';
 
 export default function ProductDetailsScreen() {
-  const params = useLocalSearchParams<{
-    id: string;
-    name: string;
-    category: string;
-    price: string;
-    description: string;
-    image: string;
-    rating: string;
-    reviews: string;
-  }>();
+  const params = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart } = useCartStore();
+  const [product, setProduct] = useState<MobileProduct | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const slug = String(params.id || '').trim();
 
-  if (!params.id) {
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProduct = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await fetchProductBySlug(slug);
+        if (!isMounted) return;
+        setProduct(data);
+      } catch (err) {
+        if (!isMounted) return;
+        setError(String((err as Error)?.message || 'Failed to load product.'));
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (slug) {
+      loadProduct();
+    } else {
+      setLoading(false);
+      setError('Product id is missing.');
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.centered}>
+        <ThemedText type="title">Loading product...</ThemedText>
+      </ThemedView>
+    );
+  }
+
+  if (!product || error) {
     return (
       <ThemedView style={styles.centered}>
         <ThemedText type="title">Product not found</ThemedText>
+        <ThemedText type="small" style={styles.backButtonText}>
+          {error || 'Unable to find this product.'}
+        </ThemedText>
         <Pressable style={styles.backButton} onPress={() => router.back()}>
           <ThemedText style={styles.backButtonText}>Go back</ThemedText>
         </Pressable>
       </ThemedView>
     );
   }
-
-  const product = {
-    id: params.id,
-    name: params.name ?? 'Product',
-    category: params.category ?? 'Unknown',
-    price: Number(params.price) || 0,
-    description:
-      params.description ??
-      'Experience premium quality and thoughtful design in every detail. This product is built for everyday convenience and long-lasting performance.',
-    image:
-      params.image ??
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=600',
-    rating: Number(params.rating) || 4.8,
-    reviews: Number(params.reviews) || 42,
-  };
 
   return (
     <ThemedView style={styles.container}>
@@ -117,7 +142,12 @@ export default function ProductDetailsScreen() {
             ${product.price.toFixed(2)}
           </ThemedText>
         </View>
-        <Pressable style={styles.addToCartButton} onPress={() => addToCart(product)}>
+        <Pressable
+          style={styles.addToCartButton}
+          onPress={() => {
+            addToCart(product);
+          }}
+        >
           <ThemedText style={styles.addToCartText}>Add to Cart</ThemedText>
         </Pressable>
       </View>

@@ -1,31 +1,95 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useCart } from '@/context/cart-context';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { featuredProducts } from '@/data/products';
-
-const categories = [
-  { label: 'All', value: 'All' },
-  { label: 'Grocery', value: 'Grocery' },
-  { label: 'Clothes', value: 'Clothing' },
-  { label: 'Electronics', value: 'Electronics' },
-  { label: 'Others', value: 'Others' },
-];
+import { fetchCategories, type MobileCategory } from '@/lib/category-api';
+import { fetchProducts, type MobileProduct } from '@/lib/product-api';
+import { useCartStore } from '../../store/useCartStore';
+import { useUserStore } from '../../store/useUserStore';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart } = useCartStore();
+  const { hasSeenWelcome } = useUserStore() as { hasSeenWelcome: boolean };
+  const [products, setProducts] = React.useState<MobileProduct[]>([]);
+  const [categories, setCategories] = React.useState<MobileCategory[]>([]);
+  const [categoriesError, setCategoriesError] = React.useState('');
+  const [loadingProducts, setLoadingProducts] = React.useState(true);
+  const [productsError, setProductsError] = React.useState('');
   const params = useLocalSearchParams<{ category?: string }>();
-  const selectedCategory = typeof params.category === 'string' && params.category ? params.category : 'All';
-  const visibleProducts =
-    selectedCategory === 'All'
-      ? featuredProducts
-      : featuredProducts.filter((product) => product.category === selectedCategory);
+  const selectedCategory = typeof params.category === 'string' && params.category ? params.category : '';
+  const categoryOptions = React.useMemo(
+    () => [{ label: 'All', value: '' }, ...categories.map((item) => ({ label: item.name, value: item.slug }))],
+    [categories]
+  );
+
+  const visibleProducts = selectedCategory
+    ? products.filter((product) => product.categorySlug === selectedCategory)
+    : products;
+
+  const handleAddToCart = (product: MobileProduct) => {
+    addToCart(product);
+  };
+
+  React.useEffect(() => {
+    if (!hasSeenWelcome) {
+      router.replace('/welcome' as never);
+    }
+  }, [hasSeenWelcome, router]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const loadProducts = async () => {
+      try {
+        setLoadingProducts(true);
+        setProductsError('');
+        const nextProducts = await fetchProducts({ limit: 60 });
+        if (!isMounted) return;
+        setProducts(nextProducts);
+      } catch (error) {
+        if (!isMounted) return;
+        setProductsError(String((error as Error)?.message || 'Failed to load products.'));
+      } finally {
+        if (isMounted) {
+          setLoadingProducts(false);
+        }
+      }
+    };
+
+    loadProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const loadCategories = async () => {
+      try {
+        setCategoriesError('');
+        const nextCategories = await fetchCategories();
+        if (!isMounted) return;
+        setCategories(nextCategories);
+      } catch (error) {
+        if (!isMounted) return;
+        setCategoriesError(String((error as Error)?.message || 'Failed to load categories.'));
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
@@ -78,14 +142,14 @@ export default function HomeScreen() {
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryRow}>
-            {categories.map((item) => (
+            {categoryOptions.map((item) => (
               <Pressable
                 key={item.value}
                 style={[styles.categoryChip, selectedCategory === item.value && styles.categoryChipActive]}
                 onPress={() =>
                   router.push({
                     pathname: '/',
-                    params: { category: item.value === 'All' ? '' : item.value },
+                    params: { category: item.value },
                   })
                 }
               >
@@ -96,12 +160,30 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
 
+          {categoriesError ? (
+            <ThemedText type="small" style={styles.errorText}>
+              {categoriesError}
+            </ThemedText>
+          ) : null}
+
           <View style={styles.sectionHeader}>
             <ThemedText type="smallBold">Popular products</ThemedText>
             <ThemedText type="small" style={styles.linkText}>
               More
             </ThemedText>
           </View>
+
+          {loadingProducts ? (
+            <View style={styles.placeholderCard}>
+              <ThemedText type="small">Loading products...</ThemedText>
+            </View>
+          ) : productsError ? (
+            <View style={styles.placeholderCard}>
+              <ThemedText type="small" style={styles.errorText}>
+                {productsError}
+              </ThemedText>
+            </View>
+          ) : null}
 
           <View style={styles.productGrid}>
             {visibleProducts.map((product) => (
@@ -112,14 +194,7 @@ export default function HomeScreen() {
                     router.push({
                       pathname: '/product/[id]',
                       params: {
-                        id: product.id,
-                        name: product.name,
-                        category: product.category,
-                        price: product.price.toString(),
-                        description: product.description,
-                        image: product.image,
-                        rating: product.rating.toString(),
-                        reviews: product.reviews.toString(),
+                        id: product.slug,
                       },
                     })
                   }
@@ -144,7 +219,7 @@ export default function HomeScreen() {
                     </ThemedText>
                   </View>
                 </Pressable>
-                <Pressable style={styles.addButton} onPress={() => addToCart(product)}>
+                <Pressable style={styles.addButton} onPress={() => handleAddToCart(product)}>
                   <Ionicons name="add" size={18} color="#ffffff" />
                 </Pressable>
               </View>
@@ -282,6 +357,16 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: Spacing.two,
+  },
+  placeholderCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+    padding: Spacing.two,
+  },
+  errorText: {
+    color: '#b91c1c',
   },
   productCard: {
     width: '48%',

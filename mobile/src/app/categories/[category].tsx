@@ -1,19 +1,58 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useCart } from '@/context/cart-context';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { featuredProducts } from '@/data/products';
+import { fetchProducts, type MobileProduct } from '@/lib/product-api';
+import { useCartStore } from '../../../store/useCartStore';
 
 export default function CategoryProductsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ category?: string }>();
-  const { addToCart } = useCart();
-  const categoryName = params.category ?? 'Category';
-  const products = featuredProducts.filter((product) => product.category === categoryName);
+  const { addToCart } = useCartStore() as { addToCart: (item: MobileProduct) => void };
+  const categorySlug = params.category ?? '';
+  const [products, setProducts] = useState<MobileProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const result = await fetchProducts({ category: categorySlug, limit: 80 });
+        if (!isMounted) return;
+        setProducts(result);
+      } catch (err) {
+        if (!isMounted) return;
+        setError(String((err as Error)?.message || 'Failed to load category products.'));
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (categorySlug) {
+      load();
+    } else {
+      setLoading(false);
+      setProducts([]);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [categorySlug]);
+
+  const categoryName = useMemo(() => {
+    return products[0]?.category || categorySlug || 'Category';
+  }, [products, categorySlug]);
 
   return (
     <ThemedView style={styles.container}>
@@ -30,7 +69,15 @@ export default function CategoryProductsScreen() {
           </View>
         </View>
 
-        {products.length > 0 ? (
+        {loading ? (
+          <ThemedText type="small" style={styles.emptyState}>
+            Loading products...
+          </ThemedText>
+        ) : error ? (
+          <ThemedText type="small" style={styles.errorState}>
+            {error}
+          </ThemedText>
+        ) : products.length > 0 ? (
           <View style={styles.productGrid}>
             {products.map((product) => (
               <View key={product.id} style={styles.productCard}>
@@ -40,14 +87,7 @@ export default function CategoryProductsScreen() {
                     router.push({
                       pathname: '/product/[id]',
                       params: {
-                        id: product.id,
-                        name: product.name,
-                        category: product.category,
-                        price: product.price.toString(),
-                        description: product.description,
-                        image: product.image,
-                        rating: product.rating.toString(),
-                        reviews: product.reviews.toString(),
+                        id: product.slug,
                       },
                     })
                   }
@@ -158,6 +198,11 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     color: '#6b7280',
+    textAlign: 'center',
+    paddingTop: Spacing.four,
+  },
+  errorState: {
+    color: '#b91c1c',
     textAlign: 'center',
     paddingTop: Spacing.four,
   },

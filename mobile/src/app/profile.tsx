@@ -1,16 +1,15 @@
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect } from 'react';
 
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { apiRequest } from '@/lib/api-client';
+import { useUserStore } from '../../store/useUserStore';
 
-const user = {
-  name: 'Sandip',
-  email: 'sandip@example.com',
-  avatar:
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300',
-};
+const avatarUrl =
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300';
 
 type MenuItem = {
   label: string;
@@ -20,14 +19,62 @@ type MenuItem = {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { user, logout, setUser } = useUserStore() as {
+    user: { name: string; email: string } | null;
+    logout: () => void;
+    setUser: (userData: { id: string; name: string; email: string; role?: string }) => void;
+  };
+  const loginPath: any = '/login';
+  const registerPath: any = '/register';
+
+  const requireAuth = (action: () => void) => {
+    if (!user) {
+      Alert.alert('Login required', 'Please login to continue.');
+      (router.push as any)('/login');
+      return;
+    }
+    action();
+  };
 
   const menuItems: MenuItem[] = [
-    { label: 'My Orders', icon: 'receipt-outline', onPress: () => router.push('/orders') },
-    { label: 'Edit Profile', icon: 'create-outline', onPress: () => router.push('/edit-profile') },
+    { label: 'My Orders', icon: 'receipt-outline', onPress: () => requireAuth(() => router.push('/orders')) },
+    { label: 'Edit Profile', icon: 'create-outline', onPress: () => requireAuth(() => router.push('/edit-profile')) },
     { label: 'Address', icon: 'location-outline', onPress: () => Alert.alert('Address', 'Address management coming soon.') },
   ];
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncProfile = async () => {
+      if (!user) return;
+
+      try {
+        const profile = await apiRequest<{ id: string; name: string; email: string; role?: string }>('/api/auth/profile', {
+          method: 'GET',
+          authenticated: true,
+        });
+
+        if (!isMounted) return;
+        setUser({
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role,
+        });
+      } catch {
+        // Keep local session state; non-blocking profile refresh.
+      }
+    };
+
+    syncProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, setUser]);
+
   const handleLogout = () => {
+    logout();
     Alert.alert('Logged out');
   };
 
@@ -35,9 +82,25 @@ export default function ProfileScreen() {
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
         <View style={styles.headerCard}>
-          <Image source={{ uri: user.avatar }} style={styles.avatar} />
-          <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+          {user ? (
+            <>
+              <Text style={styles.userName}>{user.name}</Text>
+              <Text style={styles.userEmail}>{user.email}</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.userName}>Not logged in</Text>
+              <View style={styles.authActions}>
+                <TouchableOpacity style={styles.loginButton} activeOpacity={0.85} onPress={() => router.push(loginPath)}>
+                  <Text style={styles.loginButtonText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.registerButton} activeOpacity={0.85} onPress={() => router.push(registerPath)}>
+                  <Text style={styles.registerButtonText}>Register</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </View>
 
         <View style={styles.menuCard}>
@@ -107,6 +170,41 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 14,
     color: '#6b7280',
+  },
+  authActions: {
+    marginTop: Spacing.two,
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  loginButton: {
+    minHeight: 40,
+    minWidth: 110,
+    borderRadius: 12,
+    backgroundColor: '#4f46e5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.three,
+  },
+  loginButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  registerButton: {
+    minHeight: 40,
+    minWidth: 110,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.three,
+    backgroundColor: '#ffffff',
+  },
+  registerButtonText: {
+    color: '#374151',
+    fontSize: 14,
+    fontWeight: '700',
   },
   menuCard: {
     borderRadius: 24,
