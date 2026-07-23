@@ -20,6 +20,7 @@ type StoreCartItem = {
   price: number;
   image: string;
   quantity: number;
+  stock?: number;
 };
 
 export default function CartScreen() {
@@ -63,7 +64,7 @@ export default function CartScreen() {
     };
   };
 
-  const itemCount = cartItems.length;
+  const itemCount = cartItems.reduce((sum: number, item: StoreCartItem) => sum + item.quantity, 0);
   const total = cartItems.reduce((sum: number, item: StoreCartItem) => sum + item.price * item.quantity, 0);
 
   const handlePlaceOrder = () => {
@@ -209,6 +210,8 @@ export default function CartScreen() {
                     onIncrease={() => increaseQuantity(item.id)}
                     onDecrease={() => decreaseQuantity(item.id)}
                     onRemove={() => removeFromCart(item.id)}
+                    canIncrease={Number(item.stock || 0) <= 0 ? false : item.quantity < Number(item.stock || 0)}
+                    canDecrease={item.quantity > 1}
                   />
                 ))}
                 <View style={styles.bottomSpacer} />

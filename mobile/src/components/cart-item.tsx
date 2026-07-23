@@ -10,9 +10,11 @@ type Props = {
   onIncrease: () => void;
   onDecrease: () => void;
   onRemove: () => void;
+  canIncrease?: boolean;
+  canDecrease?: boolean;
 };
 
-export function CartItemRow({ item, onIncrease, onDecrease, onRemove }: Props) {
+export function CartItemRow({ item, onIncrease, onDecrease, onRemove, canIncrease = true, canDecrease = true }: Props) {
   const lineTotal = item.price * item.quantity;
 
   return (
@@ -32,14 +34,14 @@ export function CartItemRow({ item, onIncrease, onDecrease, onRemove }: Props) {
 
       <View style={styles.controlsColumn}>
         <View style={styles.quantityWrap}>
-          <Pressable style={styles.controlButton} onPress={onDecrease}>
-            <Ionicons name="remove" size={18} color="#111827" />
+          <Pressable style={[styles.controlButton, !canDecrease && styles.controlButtonDisabled]} onPress={onDecrease} disabled={!canDecrease}>
+            <Ionicons name="remove" size={18} color={canDecrease ? '#111827' : '#9ca3af'} />
           </Pressable>
           <ThemedText type="smallBold" style={styles.quantityText}>
             {item.quantity}
           </ThemedText>
-          <Pressable style={styles.controlButton} onPress={onIncrease}>
-            <Ionicons name="add" size={18} color="#111827" />
+          <Pressable style={[styles.controlButton, !canIncrease && styles.controlButtonDisabled]} onPress={onIncrease} disabled={!canIncrease}>
+            <Ionicons name="add" size={18} color={canIncrease ? '#111827' : '#9ca3af'} />
           </Pressable>
         </View>
 
@@ -113,6 +115,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e7eb',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  controlButtonDisabled: {
+    backgroundColor: '#f9fafb',
   },
   removeButton: {
     width: 30,

@@ -14,11 +14,24 @@ export default function ProductDetailsScreen() {
   const router = useRouter();
   const { addToCart } = useCartStore();
   const [product, setProduct] = useState<MobileProduct | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const slug = String(params.id || '').trim();
+  const [loading, setLoading] = useState(Boolean(slug));
+  const [error, setError] = useState(slug ? '' : 'Product id is missing.');
+
+  const stock = Number(product?.stock || 0);
+  const maxQuantity = stock > 0 ? stock : 1;
+  const totalPrice = Number(product?.price || 0) * quantity;
+
+  const updateQuantity = (nextQuantity: number) => {
+    setQuantity(Math.max(1, Math.min(nextQuantity, maxQuantity)));
+  };
 
   useEffect(() => {
+    if (!slug) {
+      return;
+    }
+
     let isMounted = true;
 
     const loadProduct = async () => {
@@ -28,6 +41,7 @@ export default function ProductDetailsScreen() {
         const data = await fetchProductBySlug(slug);
         if (!isMounted) return;
         setProduct(data);
+        setQuantity(1);
       } catch (err) {
         if (!isMounted) return;
         setError(String((err as Error)?.message || 'Failed to load product.'));
@@ -38,12 +52,7 @@ export default function ProductDetailsScreen() {
       }
     };
 
-    if (slug) {
-      loadProduct();
-    } else {
-      setLoading(false);
-      setError('Product id is missing.');
-    }
+    loadProduct();
 
     return () => {
       isMounted = false;
@@ -120,6 +129,46 @@ export default function ProductDetailsScreen() {
             </ThemedText>
           </View>
 
+          <View style={styles.quantityCard}>
+            <View style={styles.quantityHeader}>
+              <View>
+                <ThemedText type="smallBold" style={styles.sectionTitle}>
+                  Quantity
+                </ThemedText>
+                <ThemedText type="small" style={styles.quantityHint}>
+                  Min 1{stock > 0 ? `, max ${stock} in stock` : ''}
+                </ThemedText>
+              </View>
+              <View style={[styles.stockBadge, stock <= 0 && styles.stockBadgeEmpty]}>
+                <ThemedText type="smallBold" style={[styles.stockText, stock <= 0 && styles.stockTextEmpty]}>
+                  {stock > 0 ? `${stock} available` : 'Out of stock'}
+                </ThemedText>
+              </View>
+            </View>
+
+            <View style={styles.quantityStepper}>
+              <Pressable
+                style={[styles.quantityButton, quantity <= 1 && styles.quantityButtonDisabled]}
+                onPress={() => updateQuantity(quantity - 1)}
+                disabled={quantity <= 1}
+              >
+                <Ionicons name="remove" size={20} color={quantity <= 1 ? '#9ca3af' : '#1a1a40'} />
+              </Pressable>
+              <View style={styles.quantityValueWrap}>
+                <ThemedText type="subtitle" style={styles.quantityValue}>
+                  {quantity}
+                </ThemedText>
+              </View>
+              <Pressable
+                style={[styles.quantityButton, (quantity >= maxQuantity || stock <= 0) && styles.quantityButtonDisabled]}
+                onPress={() => updateQuantity(quantity + 1)}
+                disabled={quantity >= maxQuantity || stock <= 0}
+              >
+                <Ionicons name="add" size={20} color={quantity >= maxQuantity || stock <= 0 ? '#9ca3af' : '#1a1a40'} />
+              </Pressable>
+            </View>
+          </View>
+
           <View style={styles.extraCard}>
             <View style={styles.extraRow}>
               <ThemedText type="smallBold">Immediate Stock</ThemedText>
@@ -139,16 +188,17 @@ export default function ProductDetailsScreen() {
             Total price
           </ThemedText>
           <ThemedText type="subtitle" style={styles.totalPrice}>
-            ${product.price.toFixed(2)}
+            ${totalPrice.toFixed(2)}
           </ThemedText>
         </View>
         <Pressable
-          style={styles.addToCartButton}
+          style={[styles.addToCartButton, stock <= 0 && styles.addToCartButtonDisabled]}
           onPress={() => {
-            addToCart(product);
+            addToCart(product, quantity);
           }}
+          disabled={stock <= 0}
         >
-          <ThemedText style={styles.addToCartText}>Add to Cart</ThemedText>
+          <ThemedText style={styles.addToCartText}>{stock > 0 ? 'Add to Cart' : 'Out of Stock'}</ThemedText>
         </Pressable>
       </View>
     </ThemedView>
@@ -254,6 +304,68 @@ const styles = StyleSheet.create({
     color: '#4b5563',
     lineHeight: 22,
   },
+  quantityCard: {
+    gap: Spacing.two,
+    padding: Spacing.three,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+  },
+  quantityHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.two,
+  },
+  quantityHint: {
+    color: '#6b7280',
+    marginTop: 2,
+  },
+  stockBadge: {
+    borderRadius: 999,
+    backgroundColor: '#ecfdf5',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  stockBadgeEmpty: {
+    backgroundColor: '#fff7ed',
+  },
+  stockText: {
+    color: '#16a34a',
+  },
+  stockTextEmpty: {
+    color: '#ff6b2c',
+  },
+  quantityStepper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: Spacing.two,
+    backgroundColor: '#f5f5f7',
+    borderRadius: 999,
+    padding: 6,
+  },
+  quantityButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityButtonDisabled: {
+    backgroundColor: '#f3f4f6',
+  },
+  quantityValueWrap: {
+    minWidth: 48,
+    alignItems: 'center',
+  },
+  quantityValue: {
+    fontSize: 28,
+    lineHeight: 32,
+    color: '#1a1a40',
+  },
   extraCard: {
     borderRadius: 24,
     backgroundColor: '#ffffff',
@@ -295,6 +407,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.three,
     borderRadius: 18,
+  },
+  addToCartButtonDisabled: {
+    backgroundColor: '#9ca3af',
   },
   addToCartText: {
     color: '#ffffff',

@@ -26,8 +26,8 @@ const menuItems: BottomMenuItem[] = [
 export function BottomMenu() {
   const theme = useTheme();
   const pathname = usePathname();
-  const { cartItems } = useCartStore() as { cartItems: Array<{ id: string }> };
-  const cartItemCount = cartItems.length;
+  const { cartItems } = useCartStore() as { cartItems: { id: string; quantity?: number }[] };
+  const cartItemCount = cartItems.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundElement, borderTopColor: theme.backgroundSelected }]}> 

@@ -2,6 +2,7 @@ import { DefaultTheme, Slot, ThemeProvider, usePathname } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { BottomMenu } from '../components/bottom-menu';
+import { AppToast } from '../components/ui/app-toast';
 import { CartProvider } from '@/context/cart-context';
 
 export default function RootLayout() {
@@ -16,6 +17,7 @@ export default function RootLayout() {
             <Slot />
           </View>
           {!hideBottomMenu ? <BottomMenu /> : null}
+          <AppToast bottomOffset={hideBottomMenu ? 20 : 74} />
         </View>
       </CartProvider>
     </ThemeProvider>
