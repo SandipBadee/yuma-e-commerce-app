@@ -17,12 +17,23 @@ type MenuItem = {
   onPress: () => void;
 };
 
+type ProfileResponse = {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  profile?: {
+    phone?: string | null;
+    address?: string | null;
+  } | null;
+};
+
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout, setUser } = useUserStore() as {
-    user: { name: string; email: string } | null;
+    user: { name: string; email: string; phone?: string; address?: string } | null;
     logout: () => void;
-    setUser: (userData: { id: string; name: string; email: string; role?: string }) => void;
+    setUser: (userData: { id: string; name: string; email: string; role?: string; phone?: string; address?: string }) => void;
   };
   const loginPath: any = '/login';
   const registerPath: any = '/register';
@@ -36,10 +47,17 @@ export default function ProfileScreen() {
     action();
   };
 
+  const handleAddressPress = () => {
+    requireAuth(() => {
+      const savedAddress = String(user?.address || '').trim();
+      Alert.alert('Address', savedAddress || 'No address saved yet. Add it in Edit Profile.');
+    });
+  };
+
   const menuItems: MenuItem[] = [
     { label: 'My Orders', icon: 'receipt-outline', onPress: () => requireAuth(() => router.push('/orders')) },
     { label: 'Edit Profile', icon: 'create-outline', onPress: () => requireAuth(() => router.push('/edit-profile')) },
-    { label: 'Address', icon: 'location-outline', onPress: () => Alert.alert('Address', 'Address management coming soon.') },
+    { label: 'Address', icon: 'location-outline', onPress: handleAddressPress },
   ];
 
   useEffect(() => {
@@ -49,7 +67,7 @@ export default function ProfileScreen() {
       if (!user) return;
 
       try {
-        const profile = await apiRequest<{ id: string; name: string; email: string; role?: string }>('/api/auth/profile', {
+        const profile = await apiRequest<ProfileResponse>('/api/auth/profile', {
           method: 'GET',
           authenticated: true,
         });
@@ -60,6 +78,8 @@ export default function ProfileScreen() {
           name: profile.name,
           email: profile.email,
           role: profile.role,
+          phone: profile?.profile?.phone || '',
+          address: profile?.profile?.address || '',
         });
       } catch {
         // Keep local session state; non-blocking profile refresh.

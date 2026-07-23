@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
 
@@ -15,12 +15,16 @@ import { useUserStore } from '../../store/useUserStore';
 export default function HomeScreen() {
   const router = useRouter();
   const { addToCart } = useCartStore();
-  const { hasSeenWelcome } = useUserStore() as { hasSeenWelcome: boolean };
+  const { hasSeenWelcome, user } = useUserStore() as {
+    hasSeenWelcome: boolean;
+    user: { name?: string } | null;
+  };
   const [products, setProducts] = React.useState<MobileProduct[]>([]);
   const [categories, setCategories] = React.useState<MobileCategory[]>([]);
   const [categoriesError, setCategoriesError] = React.useState('');
   const [loadingProducts, setLoadingProducts] = React.useState(true);
   const [productsError, setProductsError] = React.useState('');
+  const [searchText, setSearchText] = React.useState('');
   const params = useLocalSearchParams<{ category?: string }>();
   const selectedCategory = typeof params.category === 'string' && params.category ? params.category : '';
   const categoryOptions = React.useMemo(
@@ -28,9 +32,15 @@ export default function HomeScreen() {
     [categories]
   );
 
-  const visibleProducts = selectedCategory
-    ? products.filter((product) => product.categorySlug === selectedCategory)
-    : products;
+  const normalizedSearch = searchText.trim().toLowerCase();
+
+  const visibleProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory ? product.categorySlug === selectedCategory : true;
+    const matchesSearch = normalizedSearch ? product.name.toLowerCase().includes(normalizedSearch) : true;
+    return matchesCategory && matchesSearch;
+  });
+
+  const displayName = String(user?.name || 'Guest').trim() || 'Guest';
 
   const handleAddToCart = (product: MobileProduct) => {
     addToCart(product);
@@ -98,16 +108,28 @@ export default function HomeScreen() {
           <View style={styles.headerRow}>
             <View style={styles.headerTextWrap}>
               <ThemedText type="small" style={styles.greeting}>
-                Good morning 👋
+                Welcome to YUMA
               </ThemedText>
               <ThemedText type="subtitle" style={styles.pageTitle}>
-                Find fresh picks
+                {displayName} 👋
               </ThemedText>
             </View>
 
-            <Pressable style={styles.iconButton}>
-              <Ionicons name="cart-outline" size={22} color="#059669" />
-            </Pressable>
+          
+          </View>
+
+          <View style={styles.searchWrap}>
+            <Ionicons name="search" size={18} color="#6b7280" />
+            <TextInput
+              value={searchText}
+              onChangeText={setSearchText}
+              placeholder="Search product name"
+              placeholderTextColor="#9ca3af"
+              style={styles.searchInput}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="search"
+            />
           </View>
 
           <ThemedView type="backgroundElement" style={styles.heroCard}>
@@ -133,7 +155,7 @@ export default function HomeScreen() {
           </ThemedView>
 
           <View style={styles.sectionHeader}>
-            <ThemedText type="smallBold">Categories</ThemedText>
+            <ThemedText type="smallBold">Explore Categories</ThemedText>
             <Pressable onPress={() => router.push('/explore')}>
               <ThemedText type="small" style={styles.linkText}>
                 See all
@@ -183,6 +205,10 @@ export default function HomeScreen() {
                 {productsError}
               </ThemedText>
             </View>
+          ) : visibleProducts.length === 0 ? (
+            <View style={styles.placeholderCard}>
+              <ThemedText type="small">No products found</ThemedText>
+            </View>
           ) : null}
 
           <View style={styles.productGrid}>
@@ -208,14 +234,9 @@ export default function HomeScreen() {
                       {product.name}
                     </ThemedText>
 
-                    <View style={styles.ratingRow}>
-                      <Ionicons name="star" size={13} color="#f59e0b" />
-                      <ThemedText type="small" style={styles.ratingText}>
-                        {product.rating} ({product.reviews})
-                      </ThemedText>
-                    </View>
+                   
                     <ThemedText type="smallBold" style={styles.priceText}>
-                      ${product.price.toFixed(2)}
+                      NPR {product.price}
                     </ThemedText>
                   </View>
                 </Pressable>
@@ -271,6 +292,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecfdf5',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 14,
+    paddingHorizontal: Spacing.two,
+    minHeight: 48,
+    gap: Spacing.one,
+  },
+  searchInput: {
+    flex: 1,
+    color: '#111827',
+    fontSize: 15,
   },
   heroCard: {
     borderRadius: 24,

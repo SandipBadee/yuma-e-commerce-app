@@ -47,40 +47,44 @@ button.primary {
 }
 
 .admin-theme {
-  --admin-bg: #fbf4f5;
-  --admin-surface: #fffdfd;
-  --admin-surface-2: #f8eaea;
-  --admin-border: #e9cfd3;
-  --admin-text: #3c1118;
-  --admin-text-muted: #7d4b54;
-  --admin-brand: #7a1121;
-  --admin-brand-strong: #5f0d1a;
-  --admin-accent: #f2bb6d;
-  --admin-ring: rgba(122, 17, 33, 0.25);
+  --admin-bg: #ffffff;
+  --admin-surface: #ffffff;
+  --admin-surface-2: #f5f5f7;
+  --admin-border: #9ca3af;
+  --admin-text: #1a1a40;
+  --admin-text-muted: #6b7280;
+  --admin-brand: #5b2eff;
+  --admin-brand-strong: #1a1a40;
+  --admin-accent: #ff6b2c;
+  --admin-success: #4caf50;
+  --admin-info: #3b82f6;
+  --admin-ring: color-mix(in srgb, #5b2eff 30%, transparent 70%);
 
   background:
-    radial-gradient(circle at 88% 0%, rgba(122, 17, 33, 0.18), transparent 38%),
-    radial-gradient(circle at 6% 0%, rgba(167, 40, 62, 0.14), transparent 34%),
+    radial-gradient(circle at 90% -10%, color-mix(in srgb, #5b2eff 16%, transparent 84%), transparent 40%),
+    radial-gradient(circle at 8% 2%, color-mix(in srgb, #3b82f6 12%, transparent 88%), transparent 36%),
     var(--admin-bg);
   color: var(--admin-text);
   font-family: "Manrope", sans-serif;
 }
 
 .admin-theme.admin-dark {
-  --admin-bg: #030102;
-  --admin-surface: #0c0507;
-  --admin-surface-2: #3b1721;
-  --admin-border: #5f2b38;
-  --admin-text: #f7e8eb;
-  --admin-text-muted: #d8aeb7;
-  --admin-brand: #b43b52;
-  --admin-brand-strong: #93243b;
-  --admin-accent: #f0bf76;
-  --admin-ring: rgba(180, 59, 82, 0.4);
+  --admin-bg: #0f1230;
+  --admin-surface: #181c44;
+  --admin-surface-2: #20275a;
+  --admin-border: #4d5699;
+  --admin-text: #f5f7ff;
+  --admin-text-muted: #c4caeb;
+  --admin-brand: #7f61ff;
+  --admin-brand-strong: #5b2eff;
+  --admin-accent: #ff9a6d;
+  --admin-success: #66cf6a;
+  --admin-info: #6da8ff;
+  --admin-ring: color-mix(in srgb, #7f61ff 42%, transparent 58%);
 
   background:
-    radial-gradient(circle at 88% -10%, rgba(180, 59, 82, 0.25), transparent 40%),
-    radial-gradient(circle at 10% 8%, rgba(240, 191, 118, 0.13), transparent 36%),
+    radial-gradient(circle at 88% -10%, color-mix(in srgb, #7f61ff 24%, transparent 76%), transparent 43%),
+    radial-gradient(circle at 10% 8%, color-mix(in srgb, #3b82f6 18%, transparent 82%), transparent 38%),
     var(--admin-bg);
 }
 
@@ -132,7 +136,7 @@ button.primary {
   border-color: var(--admin-brand);
   color: #fff;
   background: linear-gradient(135deg, var(--admin-brand), var(--admin-brand-strong));
-  box-shadow: 0 8px 24px rgba(122, 17, 33, 0.26);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--admin-brand) 35%, transparent 65%);
 }
 
 .admin-theme .admin-btn,
@@ -207,6 +211,28 @@ button.primary {
   color: var(--admin-brand) !important;
 }
 
+.admin-theme .text-red-700,
+.admin-theme .text-amber-700,
+.admin-theme .text-amber-800,
+.admin-theme .text-amber-900,
+.admin-theme .text-orange-700,
+.admin-theme .text-orange-800,
+.admin-theme .text-orange-900 {
+  color: var(--admin-accent) !important;
+}
+
+.admin-theme .text-blue-700,
+.admin-theme .text-blue-800,
+.admin-theme .text-blue-900 {
+  color: var(--admin-info) !important;
+}
+
+.admin-theme .text-green-700,
+.admin-theme .text-green-800,
+.admin-theme .text-green-900 {
+  color: var(--admin-success) !important;
+}
+
 .admin-theme .bg-white,
 .admin-theme .bg-white\/90,
 .admin-theme .bg-stone-50,
@@ -214,18 +240,99 @@ button.primary {
   background-color: var(--admin-surface) !important;
 }
 
+.admin-theme .bg-red-50,
+.admin-theme .bg-red-100 {
+  background-color: color-mix(in srgb, var(--admin-brand) 10%, var(--admin-surface) 90%) !important;
+}
+
+.admin-theme .bg-red-800,
+.admin-theme .bg-red-900 {
+  background-color: var(--admin-brand) !important;
+}
+
+.admin-theme .bg-amber-50,
+.admin-theme .bg-amber-100,
+.admin-theme .bg-orange-50,
+.admin-theme .bg-orange-100 {
+  background-color: color-mix(in srgb, var(--admin-accent) 14%, var(--admin-surface) 86%) !important;
+}
+
+.admin-theme .bg-blue-50,
+.admin-theme .bg-blue-100 {
+  background-color: color-mix(in srgb, var(--admin-info) 14%, var(--admin-surface) 86%) !important;
+}
+
+.admin-theme .bg-green-50,
+.admin-theme .bg-green-100,
+.admin-theme .bg-emerald-50,
+.admin-theme .bg-emerald-100 {
+  background-color: color-mix(in srgb, var(--admin-success) 14%, var(--admin-surface) 86%) !important;
+}
+
 .admin-theme .border-stone-200,
 .admin-theme .border-stone-300,
 .admin-theme .border-amber-200,
+.admin-theme .border-amber-300,
 .admin-theme .border-orange-200,
+.admin-theme .border-orange-300,
 .admin-theme .border-red-200,
 .admin-theme .border-red-300,
 .admin-theme .border-blue-300,
+.admin-theme .border-blue-200,
 .admin-theme .border-violet-200,
 .admin-theme .border-cyan-200,
 .admin-theme .border-sky-200,
 .admin-theme .border-emerald-200 {
   border-color: var(--admin-border) !important;
+}
+
+.admin-theme .from-red-50,
+.admin-theme .from-red-100 {
+  --tw-gradient-from: color-mix(in srgb, var(--admin-brand) 10%, var(--admin-surface) 90%) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--admin-brand) 0%, transparent 100%) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.admin-theme .from-amber-50,
+.admin-theme .from-orange-50 {
+  --tw-gradient-from: color-mix(in srgb, var(--admin-accent) 12%, var(--admin-surface) 88%) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--admin-accent) 0%, transparent 100%) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.admin-theme .from-stone-100 {
+  --tw-gradient-from: color-mix(in srgb, var(--admin-info) 8%, var(--admin-surface) 92%) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--admin-info) 0%, transparent 100%) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.admin-theme .hover\:bg-red-700:hover,
+.admin-theme .hover\:bg-red-800:hover,
+.admin-theme .hover\:bg-red-900:hover {
+  background-color: var(--admin-brand-strong) !important;
+}
+
+.admin-theme .hover\:bg-red-100:hover,
+.admin-theme .hover\:bg-red-50:hover {
+  background-color: color-mix(in srgb, var(--admin-brand) 16%, var(--admin-surface) 84%) !important;
+}
+
+.admin-theme .border-red-300.bg-red-800,
+.admin-theme .border-red-300.bg-red-900 {
+  border-color: color-mix(in srgb, var(--admin-brand) 70%, var(--admin-border) 30%) !important;
+}
+
+.admin-theme .hover\:bg-blue-50:hover,
+.admin-theme .hover\:bg-blue-100:hover {
+  background-color: color-mix(in srgb, var(--admin-info) 16%, var(--admin-surface) 84%) !important;
+}
+
+.admin-theme .hover\:text-blue-700:hover {
+  color: var(--admin-info) !important;
+}
+
+.admin-theme .hover\:border-red-300:hover {
+  border-color: color-mix(in srgb, var(--admin-brand) 60%, var(--admin-border) 40%) !important;
 }
 
 .admin-theme table thead {
