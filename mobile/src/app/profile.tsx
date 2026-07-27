@@ -28,6 +28,9 @@ type ProfileResponse = {
   } | null;
 };
 
+// Extracted purple theme color from the screenshot
+const PURPLE_THEME = '#7A31FF';
+
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout, setUser } = useUserStore() as {
@@ -54,10 +57,18 @@ export default function ProfileScreen() {
     });
   };
 
-  const menuItems: MenuItem[] = [
-    { label: 'My Orders', icon: 'receipt-outline', onPress: () => requireAuth(() => router.push('/orders')) },
-    { label: 'Edit Profile', icon: 'create-outline', onPress: () => requireAuth(() => router.push('/edit-profile')) },
+  // Group 1 Menu Items (Top Card)
+  const menuGroup1: MenuItem[] = [
+    { label: 'My Orders', icon: 'clipboard-outline', onPress: () => requireAuth(() => router.push('/orders')) },
+    { label: 'Edit Profile', icon: 'person-outline', onPress: () => requireAuth(() => router.push('/edit-profile')) },
     { label: 'Address', icon: 'location-outline', onPress: handleAddressPress },
+    { label: 'Payment Methods', icon: 'card-outline', onPress: () => requireAuth(() => Alert.alert('Coming Soon', 'Payment methods will be available soon.')) },
+  ];
+
+  // Group 2 Menu Items (Bottom Card)
+  const menuGroup2: MenuItem[] = [
+    { label: 'Help & Support', icon: 'chatbubble-ellipses-outline', onPress: () => Alert.alert('Help & Support', 'How can we help you today?') },
+    { label: 'Settings', icon: 'settings-outline', onPress: () => Alert.alert('Settings', 'App settings coming soon.') },
   ];
 
   useEffect(() => {
@@ -100,50 +111,91 @@ export default function ProfileScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
-        <View style={styles.headerCard}>
-          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-          {user ? (
-            <>
-              <Text style={styles.userName}>{user.name}</Text>
-              <Text style={styles.userEmail}>{user.email}</Text>
-            </>
-          ) : (
-            <>
-              <Text style={styles.userName}>Not logged in</Text>
-              <View style={styles.authActions}>
-                <TouchableOpacity style={styles.loginButton} activeOpacity={0.85} onPress={() => router.push(loginPath)}>
-                  <Text style={styles.loginButtonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.registerButton} activeOpacity={0.85} onPress={() => router.push(registerPath)}>
-                  <Text style={styles.registerButtonText}>Register</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
+      {/* Sweeping Purple Background Layer */}
+      <View style={styles.purpleBackground} />
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        
+        {/* Header Icons */}
+        <View style={styles.topNav}>
+          <TouchableOpacity onPress={() => router.back()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => Alert.alert('Settings')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Ionicons name="settings-outline" size={26} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.menuCard}>
-          {menuItems.map((item, index) => (
-            <View key={item.label}>
-              <TouchableOpacity style={styles.menuItem} activeOpacity={0.75} onPress={item.onPress}>
-                <View style={styles.menuLeft}>
-                  <View style={styles.iconWrap}>
-                    <Ionicons name={item.icon} size={18} color={Colors.light.primary} />
-                  </View>
-                  <Text style={styles.menuLabel}>{item.label}</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={18} color={Colors.light.textSecondary} />
-              </TouchableOpacity>
-              {index < menuItems.length - 1 ? <View style={styles.divider} /> : null}
+        {/* Overlapping White Content Area */}
+        <View style={styles.whiteCurveContainer}>
+          
+          {/* Avatar Section */}
+          <View style={styles.avatarWrapper}>
+            <View style={styles.avatarShadow}>
+              <Image source={{ uri: avatarUrl }} style={styles.avatar} />
             </View>
-          ))}
-        </View>
+            
+            {user ? (
+              <>
+                <Text style={styles.userName}>{user.name}</Text>
+                <Text style={styles.userEmail}>{user.email}</Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.userName}>Not logged in</Text>
+                <View style={styles.authActions}>
+                  <TouchableOpacity style={styles.loginButton} activeOpacity={0.85} onPress={() => router.push(loginPath)}>
+                    <Text style={styles.loginButtonText}>Login</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.registerButton} activeOpacity={0.85} onPress={() => router.push(registerPath)}>
+                    <Text style={styles.registerButtonText}>Register</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
 
-        <TouchableOpacity style={styles.logoutButton} activeOpacity={0.8} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={18} color={Colors.light.backgroundElement} />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+          {/* First Menu Card */}
+          <View style={styles.menuCard}>
+            {menuGroup1.map((item, index) => (
+              <View key={item.label}>
+                <TouchableOpacity style={styles.menuItem} activeOpacity={0.7} onPress={item.onPress}>
+                  <View style={styles.menuLeft}>
+                    <Ionicons name={item.icon} size={22} color={PURPLE_THEME} />
+                    <Text style={styles.menuLabel}>{item.label}</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={18} color="#C4C4C4" />
+                </TouchableOpacity>
+                {index < menuGroup1.length - 1 && <View style={styles.divider} />}
+              </View>
+            ))}
+          </View>
+
+          {/* Second Menu Card */}
+          <View style={styles.menuCard}>
+            {menuGroup2.map((item, index) => (
+              <View key={item.label}>
+                <TouchableOpacity style={styles.menuItem} activeOpacity={0.7} onPress={item.onPress}>
+                  <View style={styles.menuLeft}>
+                    <Ionicons name={item.icon} size={22} color={PURPLE_THEME} />
+                    <Text style={styles.menuLabel}>{item.label}</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={18} color="#C4C4C4" />
+                </TouchableOpacity>
+                {index < menuGroup2.length - 1 && <View style={styles.divider} />}
+              </View>
+            ))}
+          </View>
+
+          {/* Logout Button */}
+          {user && (
+            <TouchableOpacity style={styles.logoutButton} activeOpacity={0.7} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={22} color={PURPLE_THEME} />
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          )}
+
+        </View>
       </ScrollView>
     </ThemedView>
   );
@@ -152,133 +204,145 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FAFAFA', // Light grey for smooth scrolling bottom
   },
-  page: {
-    maxWidth: MaxContentWidth,
-    width: '100%',
-    alignSelf: 'center',
-    padding: Spacing.four,
+  purpleBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 300,
+    backgroundColor: PURPLE_THEME,
+  },
+  scrollContent: {
+    flexGrow: 1,
     paddingBottom: BottomTabInset + Spacing.four,
-    gap: Spacing.three,
   },
-  headerCard: {
+  topNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 60, // Safe area compensation
+    paddingBottom: 40,
+  },
+  whiteCurveContainer: {
+    backgroundColor: '#FAFAFA', // Matches the screen background but allows the top curve
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    marginTop: 20,
+    paddingHorizontal: 20,
+    flex: 1, // Takes remaining space
+  },
+  avatarWrapper: {
     alignItems: 'center',
-    backgroundColor: Colors.light.backgroundElement,
-    borderRadius: 24,
-    paddingVertical: Spacing.four,
-    paddingHorizontal: Spacing.three,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 20,
-    elevation: 4,
+    marginTop: -55, // Pulls the avatar up onto the purple background
+    marginBottom: 24,
+  },
+  avatarShadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 8,
+    borderRadius: 55,
+    backgroundColor: '#FFF', // Prevents shadow bleed
   },
   avatar: {
-    width: 94,
-    height: 94,
-    borderRadius: 47,
-    marginBottom: Spacing.two,
-    backgroundColor: Colors.light.border,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
   },
   userName: {
     fontSize: 22,
-    lineHeight: 28,
-    fontWeight: '700',
-    color: Colors.light.text,
+    fontWeight: '800',
+    color: '#1A1A1A',
+    marginTop: 16,
   },
   userEmail: {
-    marginTop: 4,
     fontSize: 14,
-    color: Colors.light.textSecondary,
+    color: '#808080',
+    marginTop: 4,
+    fontWeight: '500',
   },
   authActions: {
-    marginTop: Spacing.two,
+    marginTop: 16,
     flexDirection: 'row',
-    gap: Spacing.two,
+    gap: 12,
   },
   loginButton: {
     minHeight: 40,
     minWidth: 110,
-    borderRadius: 12,
-    backgroundColor: Colors.light.primary,
+    borderRadius: 20,
+    backgroundColor: PURPLE_THEME,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing.three,
   },
   loginButtonText: {
-    color: Colors.light.backgroundElement,
+    color: '#FFF',
     fontSize: 14,
     fontWeight: '700',
   },
   registerButton: {
     minHeight: 40,
     minWidth: 110,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: PURPLE_THEME,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing.three,
-    backgroundColor: Colors.light.backgroundElement,
   },
   registerButtonText: {
-    color: Colors.light.text,
+    color: PURPLE_THEME,
     fontSize: 14,
     fontWeight: '700',
   },
   menuCard: {
-    borderRadius: 24,
-    backgroundColor: Colors.light.backgroundElement,
-    paddingVertical: Spacing.one,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.06,
-    shadowRadius: 18,
-    elevation: 4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   menuItem: {
-    minHeight: 58,
-    paddingHorizontal: Spacing.three,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingVertical: 18,
+    paddingHorizontal: 20,
   },
   menuLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.two,
-  },
-  iconWrap: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: Colors.light.primaryLight,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 16,
   },
   menuLabel: {
     fontSize: 15,
-    color: Colors.light.text,
-    fontWeight: '600',
+    fontWeight: '700',
+    color: '#333333',
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.light.border,
-    marginHorizontal: Spacing.three,
+    backgroundColor: '#F2F2F2',
+    marginHorizontal: 20,
   },
   logoutButton: {
-    marginTop: Spacing.two,
-    backgroundColor: Colors.light.primary,
-    borderRadius: 16,
-    minHeight: 52,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: Spacing.one,
+    gap: 12,
+    borderWidth: 1.5,
+    borderColor: PURPLE_THEME,
+    borderRadius: 16,
+    minHeight: 56,
+    marginTop: 10,
+    marginBottom: 30,
   },
   logoutText: {
-    color: Colors.light.backgroundElement,
+    color: PURPLE_THEME,
     fontWeight: '700',
-    fontSize: 15,
+    fontSize: 16,
   },
 });
