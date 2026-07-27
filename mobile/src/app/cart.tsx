@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -183,9 +183,11 @@ export default function CartScreen() {
 
           {cartItems.length === 0 ? (
             <View style={styles.emptyState}>
-              <View style={styles.emptyIconContainer}>
-                <Ionicons name="cart-outline" size={56} color={Colors.light.textSecondary} />
-              </View>
+              <Image 
+                source={require('../../assets/images/empty-cart.png')} 
+                style={styles.emptyCartImage} 
+                resizeMode="contain"
+              />
               <ThemedText type="subtitle" style={styles.emptyTitle}>
                 Your cart is feeling lonely
               </ThemedText>
@@ -312,13 +314,9 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 4,
   },
-  emptyIconContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: Colors.light.backgroundSelected,
-    alignItems: 'center',
-    justifyContent: 'center',
+  emptyCartImage: {
+    width: 200,
+    height: 200,
     marginBottom: Spacing.one,
   },
   emptyTitle: {
@@ -423,4 +421,5 @@ const styles = StyleSheet.create({
   bottomSpacer: {
     height: Spacing.one,
   },
+ 
 });
