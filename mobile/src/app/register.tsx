@@ -4,7 +4,7 @@ import { Alert, Pressable, StyleSheet, Text, TextInput, View, ScrollView } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-import { Spacing } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
 import { apiRequest } from '@/lib/api-client';
 import { useUserStore } from '../../store/useUserStore';
 
@@ -61,7 +61,7 @@ export default function RegisterScreen() {
         
         {/* Back Button */}
         <Pressable style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#111827" />
+          <Ionicons name="chevron-back" size={24} color={Colors.light.text} />
         </Pressable>
 
         {/* Header */}
@@ -73,19 +73,19 @@ export default function RegisterScreen() {
         <View style={styles.form}>
           {/* Name Input */}
           <View style={styles.inputContainer}>
-            <Ionicons name="person" size={20} color="#9ca3af" style={styles.inputIcon} />
+            <Ionicons name="person" size={20} color={Colors.light.textSecondary} style={styles.inputIcon} />
             <TextInput
               value={name}
               onChangeText={setName}
               style={styles.input}
               placeholder="Name"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={Colors.light.textSecondary}
             />
           </View>
 
           {/* Email Input */}
           <View style={styles.inputContainer}>
-            <Ionicons name="mail" size={20} color="#9ca3af" style={styles.inputIcon} />
+            <Ionicons name="mail" size={20} color={Colors.light.textSecondary} style={styles.inputIcon} />
             <TextInput
               value={email}
               onChangeText={setEmail}
@@ -93,39 +93,39 @@ export default function RegisterScreen() {
               placeholder="Email address"
               keyboardType="email-address"
               autoCapitalize="none"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={Colors.light.textSecondary}
             />
           </View>
 
           {/* Password Input */}
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed" size={20} color="#9ca3af" style={styles.inputIcon} />
+            <Ionicons name="lock-closed" size={20} color={Colors.light.textSecondary} style={styles.inputIcon} />
             <TextInput
               value={password}
               onChangeText={setPassword}
               style={styles.input}
               placeholder="Password"
               secureTextEntry={!showPassword}
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={Colors.light.textSecondary}
             />
             <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-              <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#9ca3af" />
+              <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color={Colors.light.textSecondary} />
             </Pressable>
           </View>
 
           {/* Confirm Password Input */}
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed" size={20} color="#9ca3af" style={styles.inputIcon} />
+            <Ionicons name="lock-closed" size={20} color={Colors.light.textSecondary} style={styles.inputIcon} />
             <TextInput
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               style={styles.input}
               placeholder="Confirm Password"
               secureTextEntry={!showConfirmPassword}
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={Colors.light.textSecondary}
             />
             <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
-              <Ionicons name={showConfirmPassword ? "eye" : "eye-off"} size={20} color="#9ca3af" />
+              <Ionicons name={showConfirmPassword ? "eye" : "eye-off"} size={20} color={Colors.light.textSecondary} />
             </Pressable>
           </View>
 
@@ -149,13 +149,13 @@ export default function RegisterScreen() {
           {/* Social Buttons */}
           <View style={styles.socialContainer}>
             <Pressable style={styles.socialButton}>
-              <Ionicons name="logo-facebook" size={22} color="#000" />
+              <Ionicons name="logo-facebook" size={22} color={Colors.light.text} />
             </Pressable>
             <Pressable style={styles.socialButton}>
-              <Ionicons name="logo-google" size={22} color="#000" />
+              <Ionicons name="logo-google" size={22} color={Colors.light.text} />
             </Pressable>
             <Pressable style={styles.socialButton}>
-              <Ionicons name="logo-apple" size={22} color="#000" />
+              <Ionicons name="logo-apple" size={22} color={Colors.light.text} />
             </Pressable>
           </View>
         </View>
@@ -167,7 +167,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f3f4f6', 
+    backgroundColor: Colors.light.backgroundSelected,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -179,10 +179,10 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 5,
@@ -197,12 +197,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     lineHeight: 34,
     fontWeight: '800',
-    color: '#111827',
+    color: Colors.light.text,
     textAlign: 'center',
     marginBottom: Spacing.one,
   },
   subtitle: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     fontSize: 14,
     textAlign: 'center',
     paddingHorizontal: Spacing.two,
@@ -213,11 +213,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 30,
     minHeight: 56,
     paddingHorizontal: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 5,
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: '#111827',
+    color: Colors.light.text,
     fontSize: 15,
   },
   eyeIcon: {
@@ -239,17 +239,17 @@ const styles = StyleSheet.create({
     marginTop: Spacing.two,
     minHeight: 56,
     borderRadius: 30,
-    backgroundColor: '#4f46e5', // Kept original color
+    backgroundColor: Colors.light.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#4f46e5',
+    shadowColor: Colors.light.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   primaryButtonText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
     fontSize: 16,
   },
@@ -262,11 +262,11 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.two,
   },
   linkTextRegular: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     fontSize: 14,
   },
   linkTextBold: {
-    color: '#4f46e5',
+    color: Colors.light.primary,
     fontWeight: '700',
   },
   dividerContainer: {
@@ -279,11 +279,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.light.border,
   },
   socialText: {
     textAlign: 'center',
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     fontSize: 13,
     marginBottom: Spacing.two,
   },
@@ -296,10 +296,10 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 5,

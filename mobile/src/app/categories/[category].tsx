@@ -5,7 +5,7 @@ import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { fetchProducts, type MobileProduct } from '@/lib/product-api';
 import { useCartStore } from '../../../store/useCartStore';
 
@@ -59,7 +59,7 @@ export default function CategoryProductsScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={20} color="#059669" />
+            <Ionicons name="chevron-back" size={20} color={Colors.light.primary} />
           </Pressable>
           <View style={styles.headerTextWrap}>
             <ThemedText type="small" style={styles.eyebrow}>
@@ -103,7 +103,7 @@ export default function CategoryProductsScreen() {
                   </View>
                 </Pressable>
                 <Pressable style={styles.addButton} onPress={() => addToCart(product)}>
-                  <Ionicons name="add" size={18} color="#ffffff" />
+                  <Ionicons name="add" size={18} color={Colors.light.backgroundElement} />
                 </Pressable>
               </View>
             ))}
@@ -140,14 +140,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   eyebrow: {
-    color: '#059669',
+    color: Colors.light.primary,
     marginBottom: 2,
   },
   backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.backgroundSelected,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -160,11 +160,11 @@ const styles = StyleSheet.create({
     width: '48%',
     padding: Spacing.two,
     borderRadius: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.light.border,
     gap: Spacing.one,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOpacity: 0.06,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
@@ -182,27 +182,27 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   productName: {
-    color: '#111827',
+    color: Colors.light.text,
   },
   productMeta: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
   },
   addButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-end',
   },
   emptyState: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     textAlign: 'center',
     paddingTop: Spacing.four,
   },
   errorState: {
-    color: '#b91c1c',
+    color: Colors.light.accent,
     textAlign: 'center',
     paddingTop: Spacing.four,
   },

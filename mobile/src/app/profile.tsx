@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { apiRequest } from '@/lib/api-client';
 import { useUserStore } from '../../store/useUserStore';
 
@@ -129,11 +129,11 @@ export default function ProfileScreen() {
               <TouchableOpacity style={styles.menuItem} activeOpacity={0.75} onPress={item.onPress}>
                 <View style={styles.menuLeft}>
                   <View style={styles.iconWrap}>
-                    <Ionicons name={item.icon} size={18} color="#0f766e" />
+                    <Ionicons name={item.icon} size={18} color={Colors.light.primary} />
                   </View>
                   <Text style={styles.menuLabel}>{item.label}</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
+                <Ionicons name="chevron-forward" size={18} color={Colors.light.textSecondary} />
               </TouchableOpacity>
               {index < menuItems.length - 1 ? <View style={styles.divider} /> : null}
             </View>
@@ -141,7 +141,7 @@ export default function ProfileScreen() {
         </View>
 
         <TouchableOpacity style={styles.logoutButton} activeOpacity={0.8} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={18} color="#ffffff" />
+          <Ionicons name="log-out-outline" size={18} color={Colors.light.backgroundElement} />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -163,11 +163,11 @@ const styles = StyleSheet.create({
   },
   headerCard: {
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 24,
     paddingVertical: Spacing.four,
     paddingHorizontal: Spacing.three,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.08,
     shadowRadius: 20,
@@ -178,18 +178,18 @@ const styles = StyleSheet.create({
     height: 94,
     borderRadius: 47,
     marginBottom: Spacing.two,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.light.border,
   },
   userName: {
     fontSize: 22,
     lineHeight: 28,
     fontWeight: '700',
-    color: '#111827',
+    color: Colors.light.text,
   },
   userEmail: {
     marginTop: 4,
     fontSize: 14,
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
   },
   authActions: {
     marginTop: Spacing.two,
@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
     minHeight: 40,
     minWidth: 110,
     borderRadius: 12,
-    backgroundColor: '#4f46e5',
+    backgroundColor: Colors.light.primary,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: Spacing.three,
   },
   loginButtonText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontSize: 14,
     fontWeight: '700',
   },
@@ -215,22 +215,22 @@ const styles = StyleSheet.create({
     minWidth: 110,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: Colors.light.border,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: Spacing.three,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
   },
   registerButtonText: {
-    color: '#374151',
+    color: Colors.light.text,
     fontSize: 14,
     fontWeight: '700',
   },
   menuCard: {
     borderRadius: 24,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     paddingVertical: Spacing.one,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.06,
     shadowRadius: 18,
@@ -252,23 +252,23 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#f0fdfa',
+    backgroundColor: Colors.light.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   menuLabel: {
     fontSize: 15,
-    color: '#111827',
+    color: Colors.light.text,
     fontWeight: '600',
   },
   divider: {
     height: 1,
-    backgroundColor: '#eef2f7',
+    backgroundColor: Colors.light.border,
     marginHorizontal: Spacing.three,
   },
   logoutButton: {
     marginTop: Spacing.two,
-    backgroundColor: '#dc2626',
+    backgroundColor: Colors.light.primary,
     borderRadius: 16,
     minHeight: 52,
     flexDirection: 'row',
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
   },
   logoutText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
     fontSize: 15,
   },

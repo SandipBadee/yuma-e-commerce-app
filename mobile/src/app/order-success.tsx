@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 
 export default function OrderSuccessScreen() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function OrderSuccessScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.page}>
         <View style={styles.heroIcon}>
-          <Ionicons name="checkmark" size={44} color="#ffffff" />
+          <Ionicons name="checkmark" size={44} color={Colors.light.backgroundElement} />
         </View>
 
         <ThemedText type="subtitle" style={styles.title}>
@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
     borderRadius: 46,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     alignSelf: 'center',
     marginBottom: Spacing.three,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.12,
     shadowRadius: 18,
@@ -90,21 +90,21 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    color: '#111827',
+    color: Colors.light.text,
     marginBottom: Spacing.one,
   },
   body: {
     textAlign: 'center',
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     lineHeight: 22,
     marginBottom: Spacing.four,
   },
   summaryCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 24,
     padding: Spacing.three,
     gap: Spacing.two,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.08,
     shadowRadius: 20,
@@ -117,26 +117,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statusText: {
-    color: '#059669',
+    color: Colors.light.primary,
   },
   primaryButton: {
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     borderRadius: 18,
     paddingVertical: Spacing.three,
     alignItems: 'center',
     marginBottom: Spacing.two,
   },
   primaryButtonText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
   },
   secondaryButton: {
     borderRadius: 18,
     paddingVertical: Spacing.three,
     alignItems: 'center',
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.primaryLight,
   },
   secondaryButtonText: {
-    color: '#059669',
+    color: Colors.light.primary,
   },
 });

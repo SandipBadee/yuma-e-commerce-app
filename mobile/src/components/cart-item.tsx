@@ -3,7 +3,7 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { CartItem } from '@/context/cart-context';
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
 
 type Props = {
   item: CartItem;
@@ -35,18 +35,18 @@ export function CartItemRow({ item, onIncrease, onDecrease, onRemove, canIncreas
       <View style={styles.controlsColumn}>
         <View style={styles.quantityWrap}>
           <Pressable style={[styles.controlButton, !canDecrease && styles.controlButtonDisabled]} onPress={onDecrease} disabled={!canDecrease}>
-            <Ionicons name="remove" size={18} color={canDecrease ? '#111827' : '#9ca3af'} />
+            <Ionicons name="remove" size={18} color={canDecrease ? Colors.light.text : Colors.light.textSecondary} />
           </Pressable>
           <ThemedText type="smallBold" style={styles.quantityText}>
             {item.quantity}
           </ThemedText>
           <Pressable style={[styles.controlButton, !canIncrease && styles.controlButtonDisabled]} onPress={onIncrease} disabled={!canIncrease}>
-            <Ionicons name="add" size={18} color={canIncrease ? '#111827' : '#9ca3af'} />
+            <Ionicons name="add" size={18} color={canIncrease ? Colors.light.text : Colors.light.textSecondary} />
           </Pressable>
         </View>
 
         <Pressable style={styles.removeButton} onPress={onRemove}>
-          <Ionicons name="trash-outline" size={16} color="#ef4444" />
+          <Ionicons name="trash-outline" size={16} color={Colors.light.accent} />
         </Pressable>
       </View>
     </View>
@@ -55,16 +55,16 @@ export function CartItemRow({ item, onIncrease, onDecrease, onRemove, canIncreas
 
 const styles = StyleSheet.create({
   row: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.light.border,
     paddingHorizontal: Spacing.two,
     paddingVertical: Spacing.two,
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOpacity: 0.04,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
@@ -74,20 +74,20 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 18,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: Colors.light.backgroundSelected,
   },
   meta: {
     flex: 1,
     gap: 2,
   },
   name: {
-    color: '#111827',
+    color: Colors.light.text,
   },
   price: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
   },
   lineTotal: {
-    color: '#059669',
+    color: Colors.light.primary,
     marginTop: 2,
   },
   controlsColumn: {
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: Colors.light.backgroundSelected,
     borderRadius: 999,
     paddingHorizontal: 4,
     paddingVertical: 4,
@@ -106,24 +106,24 @@ const styles = StyleSheet.create({
   quantityText: {
     minWidth: 22,
     textAlign: 'center',
-    color: '#111827',
+    color: Colors.light.text,
   },
   controlButton: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.light.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   controlButtonDisabled: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: Colors.light.backgroundSelected,
   },
   removeButton: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#fee2e2',
+    backgroundColor: Colors.light.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },

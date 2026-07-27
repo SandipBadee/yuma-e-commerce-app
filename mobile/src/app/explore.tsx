@@ -5,15 +5,26 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { fetchCategories, type MobileCategory } from '@/lib/category-api';
 
 const categoryIcons = [
-  'basket-outline',
-  'shirt-outline',
-  'desktop-outline',
-  'sparkles-outline',
+  'cafe',          // Beverages
+  'headset',       // Electronics
+  'nutrition',     // Fruits & Vegetables
+  'bag-handle',    // Grocery
+  'water',         // Household
+  'flask',         // Personal Care
 ] as const;
+
+const cardColors = [
+  '#F4F0FF', // Soft purple
+  '#FFF4EA', // Soft orange
+  '#F2FCEF', // Soft green
+  '#FFF8EB', // Soft yellow
+  '#F2F6FE', // Soft blue
+  '#F6F2FF', // Soft violet
+];
 
 export default function CategoriesScreen() {
   const router = useRouter();
@@ -56,13 +67,17 @@ export default function CategoriesScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        
+        {/* Header */}
         <View style={styles.headerRow}>
-          <View style={styles.headerTextWrap}>
-            <ThemedText type="small" style={styles.eyebrow}>
-              Browse by section
-            </ThemedText>
-            <ThemedText type="subtitle">Categories</ThemedText>
-          </View>
+          <Pressable onPress={() => router.back()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Ionicons name="chevron-back" size={28} color={Colors.light.text} />
+          </Pressable>
+          
+          <Text style={styles.headerTitle}>Categories</Text>
+          
+          {/* Empty view to balance the flexbox and keep the title centered */}
+          <View style={{ width: 28 }} />
         </View>
 
         {loading ? (
@@ -76,28 +91,43 @@ export default function CategoriesScreen() {
         ) : (
           <View style={styles.categoryGrid}>
             {categoryCards.map((category, index) => {
-            const icon = categoryIcons[index % categoryIcons.length];
-            return (
-              <Pressable
-                key={category.value}
-                style={styles.categoryCard}
-                onPress={() =>
-                  router.push({
-                    pathname: '/categories/[category]',
-                    params: { category: category.value },
-                  })
-                }
-              >
-                <View style={styles.iconWrap}>
-                  <Ionicons name={icon} size={24} color="#059669" />
-                </View>
-                <Text style={styles.categoryTitle}>{category.label}</Text>
-                <ThemedText type="small" style={styles.categoryMeta}>
-                  {category.count} products
-                </ThemedText>
-              </Pressable>
-            );
-          })}
+              const icon = categoryIcons[index % categoryIcons.length];
+              const bgColor = cardColors[index % cardColors.length];
+              const iconColor = icon === 'cafe' ? '#8A2BE2' 
+                              : icon === 'headset' ? '#FF8C00'
+                              : icon === 'nutrition' ? '#32CD32'
+                              : icon === 'bag-handle' ? '#FFB81C'
+                              : icon === 'water' ? '#1E90FF'
+                              : '#9370DB';
+
+              return (
+                <Pressable
+                  key={category.value}
+                  style={({ pressed }) => [
+                    styles.categoryCard,
+                    { backgroundColor: bgColor },
+                    pressed && styles.cardPressed
+                  ]}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/categories/[category]',
+                      params: { category: category.value },
+                    })
+                  }
+                >
+                  <View style={styles.iconContainer}>
+                    <Ionicons name={icon} size={64} color={iconColor} />
+                  </View>
+                  
+                  <View style={styles.textContainer}>
+                    <Text style={styles.categoryTitle} numberOfLines={2}>{category.label}</Text>
+                    <Text style={styles.categoryMeta}>
+                      {category.count} products
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
           </View>
         )}
       </ScrollView>
@@ -108,6 +138,7 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   content: {
     maxWidth: MaxContentWidth,
@@ -116,60 +147,64 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
     paddingBottom: Spacing.five,
-    gap: Spacing.three,
   },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: Spacing.four,
+    marginTop: Spacing.one,
   },
-  headerTextWrap: {
-    flex: 1,
-  },
-  eyebrow: {
-    color: '#059669',
-    marginBottom: 2,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: Colors.light.text,
   },
   categoryGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.two,
+    justifyContent: 'space-between',
   },
   categoryCard: {
-    width: '48%',
-    padding: Spacing.three,
+    width: '47.5%',
+    height: 200,
+    padding: 16,
     borderRadius: 20,
-    backgroundColor: '#ffffff',
-    gap: Spacing.one,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    marginBottom: 16,
+    justifyContent: 'space-between',
   },
-  iconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: '#ecfdf5',
+  cardPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
+  },
+  iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
+  },
+  textContainer: {
+    alignItems: 'flex-start',
+    marginTop: 12,
   },
   categoryTitle: {
     fontSize: 15,
-    fontWeight: '700',
-    color: '#111827',
-    textTransform: 'capitalize',
+    fontWeight: '800',
+    color: '#333333',
+    marginBottom: 4,
   },
   categoryMeta: {
-    color: '#6b7280',
+    fontSize: 12,
+    color: '#888888',
+    fontWeight: '500',
   },
   metaText: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
+    textAlign: 'center',
+    marginTop: 20,
   },
   errorText: {
-    color: '#b91c1c',
+    color: Colors.light.accent,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

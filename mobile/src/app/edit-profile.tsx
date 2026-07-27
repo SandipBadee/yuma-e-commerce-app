@@ -12,7 +12,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { apiRequest } from '@/lib/api-client';
 import { useUserStore } from '../../store/useUserStore';
@@ -131,7 +131,7 @@ export default function EditProfileScreen() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.page}>
           <View style={styles.centered}>
-            <ActivityIndicator size="small" color="#4f46e5" />
+            <ActivityIndicator size="small" color={Colors.light.primary} />
             <Text style={styles.loadingText}>Loading profile...</Text>
           </View>
         </SafeAreaView>
@@ -152,7 +152,7 @@ export default function EditProfileScreen() {
             onChangeText={setName}
             style={styles.input}
             placeholder="Your full name"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={Colors.light.textSecondary}
           />
 
           <Text style={styles.label}>Phone</Text>
@@ -162,7 +162,7 @@ export default function EditProfileScreen() {
             style={styles.input}
             placeholder="e.g. +358 40 123 4567"
             keyboardType="phone-pad"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={Colors.light.textSecondary}
           />
 
           <Text style={styles.label}>Address</Text>
@@ -171,7 +171,7 @@ export default function EditProfileScreen() {
             onChangeText={setAddress}
             style={[styles.input, styles.textArea]}
             placeholder="Street and apartment details"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={Colors.light.textSecondary}
             multiline
             numberOfLines={3}
             textAlignVertical="top"
@@ -208,23 +208,23 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   loadingText: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#111827',
+    color: Colors.light.text,
     marginBottom: Spacing.one,
   },
   body: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     marginBottom: Spacing.three,
   },
   form: {
     gap: Spacing.two,
   },
   label: {
-    color: '#374151',
+    color: Colors.light.text,
     fontWeight: '600',
     marginBottom: -4,
   },
@@ -232,10 +232,10 @@ const styles = StyleSheet.create({
     minHeight: 48,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
     paddingHorizontal: 14,
-    color: '#111827',
+    color: Colors.light.text,
   },
   textArea: {
     minHeight: 92,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: Spacing.one,
-    backgroundColor: '#4f46e5',
+    backgroundColor: Colors.light.primary,
     borderRadius: 14,
     minHeight: 48,
     alignItems: 'center',
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
   },
   secondaryButton: {
@@ -262,11 +262,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    backgroundColor: '#ffffff',
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
   },
   secondaryButtonText: {
-    color: '#374151',
+    color: Colors.light.text,
     fontWeight: '700',
   },
 });

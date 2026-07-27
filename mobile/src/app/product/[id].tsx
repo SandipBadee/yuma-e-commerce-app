@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { fetchProductBySlug, type MobileProduct } from '@/lib/product-api';
 import { useCartStore } from '../../../store/useCartStore';
 
@@ -86,7 +86,7 @@ export default function ProductDetailsScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="#059669" />
+            <Ionicons name="chevron-back" size={24} color={Colors.light.primary} />
           </Pressable>
           <View style={styles.pageTitleWrap}>
             <ThemedText type="smallBold" style={styles.productCategory}>
@@ -110,7 +110,7 @@ export default function ProductDetailsScreen() {
         <View style={styles.infoCard}>
           <View style={styles.ratingRowLarge}>
             <View style={styles.ratingBadgeLarge}>
-              <Ionicons name="star" size={14} color="#f59e0b" />
+              <Ionicons name="star" size={14} color={Colors.light.accent} />
               <ThemedText type="smallBold" style={styles.ratingTextLarge}>
                 {product.rating}
               </ThemedText>
@@ -152,7 +152,11 @@ export default function ProductDetailsScreen() {
                 onPress={() => updateQuantity(quantity - 1)}
                 disabled={quantity <= 1}
               >
-                <Ionicons name="remove" size={20} color={quantity <= 1 ? '#9ca3af' : '#1a1a40'} />
+                <Ionicons
+                  name="remove"
+                  size={20}
+                  color={quantity <= 1 ? Colors.light.textSecondary : Colors.light.text}
+                />
               </Pressable>
               <View style={styles.quantityValueWrap}>
                 <ThemedText type="subtitle" style={styles.quantityValue}>
@@ -164,7 +168,11 @@ export default function ProductDetailsScreen() {
                 onPress={() => updateQuantity(quantity + 1)}
                 disabled={quantity >= maxQuantity || stock <= 0}
               >
-                <Ionicons name="add" size={20} color={quantity >= maxQuantity || stock <= 0 ? '#9ca3af' : '#1a1a40'} />
+                <Ionicons
+                  name="add"
+                  size={20}
+                  color={quantity >= maxQuantity || stock <= 0 ? Colors.light.textSecondary : Colors.light.text}
+                />
               </Pressable>
             </View>
           </View>
@@ -234,12 +242,12 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   productCategory: {
-    color: '#16a34a',
+    color: Colors.light.primary,
     fontSize: 12,
     letterSpacing: 0.5,
   },
@@ -247,7 +255,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     borderRadius: 28,
     overflow: 'hidden',
-    backgroundColor: '#f8fafc',
+    backgroundColor: Colors.light.backgroundSelected,
   },
   productImage: {
     width: '100%',
@@ -257,18 +265,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 16,
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 999,
     paddingVertical: 8,
     paddingHorizontal: 14,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOpacity: 0.08,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 2,
   },
   categoryOverlayText: {
-    color: '#059669',
+    color: Colors.light.primary,
   },
   infoCard: {
     gap: Spacing.three,
@@ -282,26 +290,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.primaryLight,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     borderRadius: 999,
   },
   ratingTextLarge: {
-    color: '#111827',
+    color: Colors.light.text,
   },
   reviewText: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
   },
   section: {
     gap: Spacing.two,
   },
   sectionTitle: {
     fontSize: 16,
-    color: '#111827',
+    color: Colors.light.text,
   },
   sectionText: {
-    color: '#4b5563',
+    color: Colors.light.textSecondary,
     lineHeight: 22,
   },
   quantityCard: {
@@ -309,8 +317,8 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
   },
   quantityHeader: {
     flexDirection: 'row',
@@ -319,30 +327,30 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   quantityHint: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     marginTop: 2,
   },
   stockBadge: {
     borderRadius: 999,
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.primaryLight,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   stockBadgeEmpty: {
-    backgroundColor: '#fff7ed',
+    backgroundColor: Colors.light.backgroundSelected,
   },
   stockText: {
-    color: '#16a34a',
+    color: Colors.light.primary,
   },
   stockTextEmpty: {
-    color: '#ff6b2c',
+    color: Colors.light.accent,
   },
   quantityStepper: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: Spacing.two,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: Colors.light.backgroundSelected,
     borderRadius: 999,
     padding: 6,
   },
@@ -350,12 +358,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     alignItems: 'center',
     justifyContent: 'center',
   },
   quantityButtonDisabled: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: Colors.light.backgroundSelected,
   },
   quantityValueWrap: {
     minWidth: 48,
@@ -364,14 +372,14 @@ const styles = StyleSheet.create({
   quantityValue: {
     fontSize: 28,
     lineHeight: 32,
-    color: '#1a1a40',
+    color: Colors.light.text,
   },
   extraCard: {
     borderRadius: 24,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     padding: Spacing.three,
     gap: Spacing.two,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.08,
     shadowRadius: 20,
@@ -392,27 +400,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.three,
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderTopColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
   },
   totalLabel: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
   },
   totalPrice: {
     fontSize: 22,
     fontWeight: '700',
   },
   addToCartButton: {
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.three,
     borderRadius: 18,
   },
   addToCartButtonDisabled: {
-    backgroundColor: '#9ca3af',
+    backgroundColor: Colors.light.textSecondary,
   },
   addToCartText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
     fontSize: 16,
   },
@@ -423,7 +431,7 @@ const styles = StyleSheet.create({
     padding: Spacing.four,
   },
   backButtonText: {
-    color: '#059669',
+    color: Colors.light.primary,
     fontWeight: '700',
     marginTop: Spacing.one,
   },

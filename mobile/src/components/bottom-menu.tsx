@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useCartStore } from '../../store/useCartStore';
 
@@ -42,7 +42,7 @@ export function BottomMenu() {
                 <Ionicons
                   name={item.icon}
                   size={24}
-                  color={selected ? '#059669' : '#6b7280'}
+                  color={selected ? Colors.light.primary : Colors.light.textSecondary}
                 />
                 {showBadge && (
                   <View style={styles.badge}>
@@ -72,11 +72,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: Colors.light.border,
     paddingVertical: Spacing.two,
     width: '100%',
     paddingHorizontal: Spacing.four,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
   },
   item: {
     alignItems: 'center',
@@ -98,23 +98,23 @@ const styles = StyleSheet.create({
     minWidth: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: '#ef4444',
+    backgroundColor: Colors.light.accent,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
   },
   badgeText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
     fontSize: 10,
   },
   label: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     marginTop: 6,
     fontSize: 10,
   },
   labelActive: {
-    color: '#059669',
+    color: Colors.light.primary,
     fontWeight: '700',
   },
 });

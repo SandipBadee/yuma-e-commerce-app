@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CartItemRow } from '@/components/cart-item';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { createOrder } from '@/lib/order-api';
 import { useCartStore } from '../../store/useCartStore';
@@ -184,7 +184,7 @@ export default function CartScreen() {
           {cartItems.length === 0 ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIconContainer}>
-                <Ionicons name="cart-outline" size={56} color="#9ca3af" />
+                <Ionicons name="cart-outline" size={56} color={Colors.light.textSecondary} />
               </View>
               <ThemedText type="subtitle" style={styles.emptyTitle}>
                 Your cart is feeling lonely
@@ -246,7 +246,7 @@ export default function CartScreen() {
                   disabled={cartItems.length === 0 || isPlacingOrder}
                 >
                   <View style={styles.placeOrderContent}>
-                    {isPlacingOrder ? <ActivityIndicator color="#ffffff" size="small" /> : null}
+                    {isPlacingOrder ? <ActivityIndicator color={Colors.light.backgroundElement} size="small" /> : null}
                     <ThemedText style={styles.placeOrderText}>
                       {isPlacingOrder ? 'Placing order...' : 'Place Order'}
                     </ThemedText>
@@ -264,7 +264,7 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f6f8',
+    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,
@@ -291,10 +291,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.two,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: '#dcfce7',
+    backgroundColor: Colors.light.primaryLight,
   },
   itemCountText: {
-    color: '#15803d',
+    color: Colors.light.primaryDark,
   },
   emptyState: {
     flex: 1,
@@ -303,10 +303,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: Spacing.four,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 24,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.05,
     shadowRadius: 20,
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.backgroundSelected,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: Spacing.one,
@@ -325,29 +325,29 @@ const styles = StyleSheet.create({
     marginTop: Spacing.one,
     marginBottom: Spacing.one,
     textAlign: 'center',
-    color: '#111827',
+    color: Colors.light.text,
   },
   emptyBody: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     textAlign: 'center',
     marginBottom: Spacing.four,
     lineHeight: 22,
   },
   primaryButton: {
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
     borderRadius: 999,
     minHeight: 48,
     justifyContent: 'center',
-    shadowColor: '#047857',
+    shadowColor: Colors.light.primaryDark,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.25,
     shadowRadius: 12,
     elevation: 3,
   },
   primaryButtonText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
   },
   cartList: {
@@ -363,9 +363,9 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.08,
     shadowRadius: 18,
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   },
   summaryDivider: {
     height: 1,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.light.border,
     marginTop: Spacing.two,
   },
   summaryRowLarge: {
@@ -395,13 +395,13 @@ const styles = StyleSheet.create({
   },
   placeOrderButton: {
     marginTop: Spacing.three,
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     paddingVertical: Spacing.three,
     borderRadius: 18,
     alignItems: 'center',
     minHeight: 54,
     justifyContent: 'center',
-    shadowColor: '#047857',
+    shadowColor: Colors.light.primaryDark,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.28,
     shadowRadius: 14,
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
   },
   placeOrderText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
     letterSpacing: 0.2,
   },
