@@ -6,7 +6,7 @@ import React from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { fetchCategories, type MobileCategory } from '@/lib/category-api';
 import { fetchProducts, type MobileProduct } from '@/lib/product-api';
 import { useCartStore } from '../../store/useCartStore';
@@ -119,12 +119,12 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.searchWrap}>
-            <Ionicons name="search" size={18} color="#6b7280" />
+            <Ionicons name="search" size={18} color={Colors.light.textSecondary} />
             <TextInput
               value={searchText}
               onChangeText={setSearchText}
               placeholder="Search product name"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor={Colors.light.textSecondary}
               style={styles.searchInput}
               autoCapitalize="none"
               autoCorrect={false}
@@ -150,7 +150,7 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.heroDecor}>
-              <Ionicons name="bag-handle-outline" size={84} color="#ffffff" />
+              <Ionicons name="bag-handle-outline" size={84} color={Colors.light.backgroundElement} />
             </View>
           </ThemedView>
 
@@ -241,7 +241,7 @@ export default function HomeScreen() {
                   </View>
                 </Pressable>
                 <Pressable style={styles.addButton} onPress={() => handleAddToCart(product)}>
-                  <Ionicons name="add" size={18} color="#ffffff" />
+                  <Ionicons name="add" size={18} color={Colors.light.backgroundElement} />
                 </Pressable>
               </View>
             ))}
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    color: '#059669',
+    color: Colors.light.primary,
     marginBottom: 2,
   },
   pageTitle: {
@@ -289,16 +289,16 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#ecfdf5',
+    backgroundColor: Colors.light.backgroundSelected,
     alignItems: 'center',
     justifyContent: 'center',
   },
   searchWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.light.border,
     borderRadius: 14,
     paddingHorizontal: Spacing.two,
     minHeight: 48,
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: '#111827',
+    color: Colors.light.text,
     fontSize: 15,
   },
   heroCard: {
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
   },
   heroContent: {
     flex: 1,
@@ -323,38 +323,38 @@ const styles = StyleSheet.create({
   },
   heroBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    color: '#ffffff',
+    backgroundColor: `${Colors.light.backgroundElement}33`,
+    color: Colors.light.backgroundElement,
     paddingHorizontal: Spacing.two,
     paddingVertical: 4,
     borderRadius: 999,
     overflow: 'hidden',
   },
   heroTitle: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontSize: 28,
     lineHeight: 34,
     fontWeight: '700',
   },
   heroText: {
-    color: 'rgba(255,255,255,0.9)',
+    color: `${Colors.light.backgroundElement}E6`,
   },
   primaryButton: {
     alignSelf: 'flex-start',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     borderRadius: 999,
   },
   primaryButtonText: {
-    color: '#059669',
+    color: Colors.light.primary,
     fontWeight: '700',
   },
   heroDecor: {
     width: 92,
     height: 92,
     borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: `${Colors.light.backgroundElement}29`,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    color: '#059669',
+    color: Colors.light.primary,
   },
   categoryRow: {
     gap: Spacing.two,
@@ -374,20 +374,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: 10,
     borderRadius: 999,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: Colors.light.backgroundSelected,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.light.border,
   },
   categoryChipActive: {
-    backgroundColor: '#059669',
-    borderColor: '#059669',
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
   },
   categoryChipText: {
-    color: '#374151',
+    color: Colors.light.text,
     fontWeight: '600',
   },
   categoryChipTextActive: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
   },
   productGrid: {
     flexDirection: 'row',
@@ -398,19 +398,19 @@ const styles = StyleSheet.create({
   placeholderCard: {
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
     padding: Spacing.two,
   },
   errorText: {
-    color: '#b91c1c',
+    color: Colors.light.accent,
   },
   productCard: {
     width: '48%',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
     borderRadius: 18,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
@@ -437,23 +437,23 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#059669',
+    backgroundColor: Colors.light.primary,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
-    shadowColor: '#000',
+    shadowColor: Colors.light.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 3,
   },
   productCategory: {
-    color: '#059669',
+    color: Colors.light.primary,
     fontSize: 11,
     fontWeight: '700',
   },
   productName: {
-    color: '#111827',
+    color: Colors.light.text,
     fontSize: 14,
   },
   ratingRow: {
@@ -463,11 +463,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   ratingText: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     fontSize: 11,
   },
   priceText: {
-    color: '#111827',
+    color: Colors.light.text,
     marginTop: 2,
   },
   bottomBar: {
@@ -477,19 +477,19 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.one,
     paddingBottom: Spacing.one,
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderTopColor: Colors.light.border,
+    backgroundColor: Colors.light.backgroundElement,
   },
   tabItem: {
     alignItems: 'center',
     gap: 4,
   },
   tabLabel: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     fontSize: 12,
   },
   tabLabelActive: {
-    color: '#059669',
+    color: Colors.light.primary,
     fontWeight: '700',
   },
 });

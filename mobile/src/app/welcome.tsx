@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Spacing } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
 import { useUserStore } from '../../store/useUserStore';
 
 export default function WelcomeScreen() {
@@ -32,7 +32,7 @@ export default function WelcomeScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.logoWrap}>
-          <Image source={require('../../assets/images/icon.png')} style={styles.logo} resizeMode="contain" />
+          <Image source={require('../../assets/images/logo_full.png')} style={styles.logo} resizeMode="contain" />
         </View>
 
         <Text style={styles.title}>Welcome to YUMA</Text>
@@ -59,7 +59,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
   },
   container: {
     flex: 1,
@@ -72,21 +72,21 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.four,
   },
   logo: {
-    width: 190,
-    height: 190,
+    width: 380,
+    height: 380,
   },
   title: {
     fontSize: 32,
     lineHeight: 38,
     fontWeight: '800',
-    color: '#1f2937',
+    color: Colors.light.text,
     textAlign: 'center',
   },
   subtitle: {
     marginTop: Spacing.two,
     fontSize: 15,
     lineHeight: 23,
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     textAlign: 'center',
   },
   actions: {
@@ -96,12 +96,12 @@ const styles = StyleSheet.create({
   primaryButton: {
     minHeight: 52,
     borderRadius: 14,
-    backgroundColor: '#4f46e5',
+    backgroundColor: Colors.light.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#ffffff',
+    color: Colors.light.backgroundElement,
     fontWeight: '700',
     fontSize: 16,
   },
@@ -109,13 +109,13 @@ const styles = StyleSheet.create({
     minHeight: 52,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: Colors.light.border,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.light.backgroundElement,
   },
   secondaryButtonText: {
-    color: '#374151',
+    color: Colors.light.text,
     fontWeight: '700',
     fontSize: 16,
   },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipText: {
-    color: '#6b7280',
+    color: Colors.light.textSecondary,
     fontSize: 14,
     textDecorationLine: 'underline',
   },

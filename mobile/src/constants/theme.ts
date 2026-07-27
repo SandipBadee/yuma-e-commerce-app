@@ -3,24 +3,52 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import '@/global.css';
-
 import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    // TEXT
+    text: '#1B1D21',
+    textSecondary: '#6B7280',
+
+    // BACKGROUND
+    background: '#F7F8FC',
+    backgroundElement: '#FFFFFF',
+    backgroundSelected: '#EFEFFF',
+
+    // BRAND (YUMA)
+    primary: '#6C3BFF',
+    primaryDark: '#24106A',
+    primaryLight: '#EFEAFF',
+
+    // ACCENTS
+    accent: '#FF6B00',   // offers / discounts
+    success: '#34C759',  // add to cart
+    info: '#3D5AFE',     // secondary actions
+
+    // UI STATES
+    border: '#E5E7EB',
+    shadow: '#000000',
   },
+
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
+    text: '#FFFFFF',
     textSecondary: '#B0B4BA',
+
+    background: '#0F1115',
+    backgroundElement: '#1A1C20',
+    backgroundSelected: '#2A2D33',
+
+    primary: '#6C3BFF',
+    primaryDark: '#24106A',
+    primaryLight: '#3A2A80',
+
+    accent: '#FF6B00',
+    success: '#34C759',
+    info: '#3D5AFE',
+
+    border: '#2E3135',
+    shadow: '#000000',
   },
 } as const;
 
